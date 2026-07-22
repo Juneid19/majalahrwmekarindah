@@ -462,30 +462,57 @@
   measurementId: "G-DGH0CZG2GJ"
 };
 
-      // Inisialisasi Firebase secara aman
+     // Inisialisasi Firebase secara aman
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// 1. MONITORING PROFIL & EDISI (SINKRON REALTIME - CUKUP 1 LISTENER)
-db.collection("settings").doc("rw_profile").onSnapshot(doc => {
+// MONITORING PROFIL & EDISI
+db.collection("settings").doc("rw_profile").onSnapshot(function(doc) {
     if (doc.exists) {
         const data = doc.data();
 
-        // 1A. Set Edisi Majalah/Mading
+        // Safe Setters
         const elementEdisi = document.getElementById('idx-edisi');
         if (elementEdisi) {
             elementEdisi.textContent = data.edisi || 'Edisi Agustus 2026';
         }
 
-        // 1B. Set Data Lainnya (Sambutan, Pengurus, RT, dll) di sini jika ada...
-        // contoh:
-        // const elSambutan = document.getElementById('idx-sambutan');
-        // if (elSambutan) elSambutan.textContent = data.sambutan || '-';
+        const elementSambutan = document.getElementById('idx-sambutan');
+        if (elementSambutan) {
+            elementSambutan.textContent = data.sambutan || '-';
+        }
     }
-}, err => {
+}, function(err) {
     console.error("Gagal mengambil data rw_profile:", err);
-});                
-                // Ringkasan Kas
+});
+
+// MONITORING MADING WARGA
+db.collection("mading")
+  .orderBy("createdAt", "desc")
+  .limit(10)
+  .onSnapshot(function(snapshot) {
+      const container = document.getElementById('container-mading-warga');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      if (snapshot.empty) {
+          container.innerHTML = '<p class="text-slate-400 text-center py-4">Tidak ada pengumuman saat ini.</p>';
+          return;
+      }
+
+      snapshot.forEach(function(doc) {
+          const item = doc.data();
+          container.innerHTML += `
+              <div class="p-4 mb-3 bg-white/5 rounded-xl border border-white/10">
+                  <h4 class="font-bold text-amber-400">${item.judul || 'Pengumuman'}</h4>
+                  <p class="text-sm text-slate-300 mt-1">${item.isi || ''}</p>
+              </div>
+          `;
+      });
+  }, function(err) {
+      console.error("Gagal memuat mading:", err);
+  });                // Ringkasan Kas
                 document.getElementById('idx-saldo-awal').innerText = formatRupiah(data.saldo_awal || 50000000);
                 document.getElementById('idx-total-masuk').innerText = "+ " + formatRupiah(data.total_pemasukan || 0);
                 document.getElementById('idx-total-keluar').innerText = "- " + formatRupiah(data.total_pengeluaran || 0);

@@ -617,12 +617,24 @@ db.collection("mading")
   .limit(10) // <-- Hanya mengambil 10 pengumuman paling baru
   .onSnapshot(snapshot => {
       const container = document.getElementById('container-mading-warga');
+      
+      // PERBAIKAN: Jika elemen tidak ada di index.html, hentikan proses tanpa bikin crash
+      if (!container) {
+          console.warn("Elemen #container-mading-warga tidak ditemukan di HTML.");
+          return;
+      }
+
       container.innerHTML = '';
       
-      if(snapshot.empty) {
+      if (snapshot.empty) {
           container.innerHTML = '<p class="text-slate-400 text-center py-4">Tidak ada pengumuman saat ini.</p>';
           return;
       }
+
+      // ... (sisa kode looping snapshot.forEach seperti biasa)
+  }, error => {
+      console.error("Gagal mengambil data mading:", error);
+  });
 
       snapshot.forEach(doc => {
           const d = doc.data();

@@ -614,13 +614,12 @@ db.collection("kegiatan").orderBy("timestamp", "desc").onSnapshot(snapshot => {
 // Dipasang di index.html
 db.collection("mading")
   .orderBy("createdAt", "desc")
-  .limit(10) // <-- Hanya mengambil 10 pengumuman paling baru
+  .limit(10)
   .onSnapshot(snapshot => {
       const container = document.getElementById('container-mading-warga');
       
-      // PERBAIKAN: Jika elemen tidak ada di index.html, hentikan proses tanpa bikin crash
+      // Amankan dari crash jika elemen HTML tidak ada
       if (!container) {
-          console.warn("Elemen #container-mading-warga tidak ditemukan di HTML.");
           return;
       }
 
@@ -631,19 +630,19 @@ db.collection("mading")
           return;
       }
 
-      // ... (sisa kode looping snapshot.forEach seperti biasa)
-  }, error => {
-      console.error("Gagal mengambil data mading:", error);
-  });
-
       snapshot.forEach(doc => {
-          const d = doc.data();
-          // Render item mading ke UI warga di sini...
+          const data = doc.data();
+          // Masukkan elemen HTML mading
+          container.innerHTML += `
+              <div class="p-4 mb-3 bg-white/5 rounded-xl border border-white/10">
+                  <h4 class="font-bold text-amber-400">${data.judul || 'Pengumuman'}</h4>
+                  <p class="text-sm text-slate-300 mt-1">${data.isi || ''}</p>
+              </div>
+          `;
       });
-  });
-
-
-        // 5. PENGAJUAN SURAT & ADUAN WARGA
+  }, error => {
+      console.error("Gagal memuat mading:", error);
+  });        // 5. PENGAJUAN SURAT & ADUAN WARGA
         function ajukanSurat(event) {
             event.preventDefault();
             const nama = document.getElementById('namaSurat').value;

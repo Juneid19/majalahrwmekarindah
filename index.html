@@ -462,27 +462,29 @@
   measurementId: "G-DGH0CZG2GJ"
 };
 
-        // Inisialisasi Firebase secara aman
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+      // Inisialisasi Firebase secara aman
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-        // 1. MONITORING PROFIL, FINANSIAL, PENGURUS INTI, & 6 RT (SINKRON REALTIME)
-        db.collection("settings").doc("rw_profile").onSnapshot(doc => {
-            if (doc.exists) {
-                const data = doc.data();
-                 
-// Memuat data Edisi dari Firestore (misal disimpan di koleksi settings doc rw_profile)
+// 1. MONITORING PROFIL & EDISI (SINKRON REALTIME - CUKUP 1 LISTENER)
 db.collection("settings").doc("rw_profile").onSnapshot(doc => {
     if (doc.exists) {
         const data = doc.data();
+
+        // 1A. Set Edisi Majalah/Mading
         const elementEdisi = document.getElementById('idx-edisi');
         if (elementEdisi) {
-            // Jika ada data edisi di Firestore tampilkan, jika kosong pakai fallback
             elementEdisi.textContent = data.edisi || 'Edisi Agustus 2026';
         }
+
+        // 1B. Set Data Lainnya (Sambutan, Pengurus, RT, dll) di sini jika ada...
+        // contoh:
+        // const elSambutan = document.getElementById('idx-sambutan');
+        // if (elSambutan) elSambutan.textContent = data.sambutan || '-';
     }
-});
-                
+}, err => {
+    console.error("Gagal mengambil data rw_profile:", err);
+});                
                 // Ringkasan Kas
                 document.getElementById('idx-saldo-awal').innerText = formatRupiah(data.saldo_awal || 50000000);
                 document.getElementById('idx-total-masuk').innerText = "+ " + formatRupiah(data.total_pemasukan || 0);

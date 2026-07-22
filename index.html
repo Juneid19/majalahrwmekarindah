@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Resmi RW 011 Mekarindah</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font: Poppins -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap">
+    <!-- Firebase SDK (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .nav-active { color: #0d7a3a; border-bottom: 2px solid #0d7a3a; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+    <!-- STICKY TOP NAVBAR -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo Header -->
+            <a href="#beranda" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full overflow-hidden border border-slate-200 shadow-sm">
+                    <img src="logo.jpg" alt="Logo RW" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-sm md:text-base leading-tight tracking-wide text-slate-900">RW 011 MEKARINDAH</h1>
+                    <span class="text-[9px] md:text-[10px] text-[#0d7a3a] font-bold uppercase tracking-widest">Cikarang Utara</span>
+                </div>
+            </a>
+            <!-- Desktop Menu Navigation -->
+            <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600">
+                <a href="#beranda" class="nav-item py-1 hover:text-[#0d7a3a] transition">Beranda</a>
+                <a href="#sambutan" class="nav-item py-1 hover:text-[#0d7a3a] transition">Sambutan</a>
+                <a href="#struktur" class="nav-item py-1 hover:text-[#0d7a3a] transition">Struktur & RT</a>
+                <a href="#kegiatan" class="nav-item py-1 hover:text-[#0d7a3a] transition">Kegiatan</a>
+                <a href="#keuangan" class="nav-item py-1 hover:text-[#0d7a3a] transition">Keuangan</a>
+                <a href="#profil" class="nav-item py-1 hover:text-[#0d7a3a] transition">Profil & Peta</a>
+                <a href="#layanan" class="nav-item py-1 hover:text-[#0d7a3a] transition">Layanan</a>
+                <a href="#pengumuman" class="bg-[#0d7a3a] hover:bg-[#095f2a] text-white px-4 py-2 rounded-full text-xs font-bold tracking-wide transition shadow-sm">Mading</a>
+            </nav>
+            <!-- Mobile Menu Button -->
+            <button class="lg:hidden text-slate-800 text-xl focus:outline-none" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-slate-100 shadow-xl absolute w-full left-0 p-6 space-y-4">
+            <a href="#beranda" onclick="toggleMobileMenu()" class="block text-sm font-semibold text-slate-700 hover:text-[#0d7a3a]"><i class="fa-solid fa-house mr-2"></i> Beranda</a>
+            <a href="#sambutan" onclick="toggleMobileMenu()" class="block text-sm font-semibold text-slate-700 hover:text-[#0d7a3a]"><i class="fa-solid fa-comment-dots mr-2"></i> Sambutan</a>
+            <a href="#struktur" onclick="toggleMobileMenu()" class="block text-sm font-semibold text-slate-700 hover:text-[#0d7a3a]"><i class="fa-solid fa-sitemap mr-2"></i> Struktur & RT</a>
+            <a href="#kegiatan" onclick="toggleMobileMenu()" class="block text-sm font-semibold text-slate-700 hover:text-[#0d7a3a]"><i class="fa-solid fa-images mr-2"></i> Kegiatan</a>
+            <a href="#keuangan" onclick="toggleMobileMenu()" class="block text-sm font-semibold text-slate-700 hover:text-[#0d7a3a]"><i class="fa-solid fa-wallet mr-2"></i> Keuangan</a>
+            <a href="#profil" onclick="toggleMobileMenu()" class="block text-sm font-semibold text-slate-700 hover:text-[#0d7a3a]"><i class="fa-solid fa-map-location-dot mr-2"></i> Profil & Peta</a>
+            <a href="#layanan" onclick="toggleMobileMenu()" class="block text-sm font-semibold text-slate-700 hover:text-[#0d7a3a]"><i class="fa-solid fa-file-invoice mr-2"></i> Layanan</a>
+            <a href="#pengumuman" onclick="toggleMobileMenu()" class="block text-sm font-semibold text-slate-700 hover:text-[#0d7a3a]"><i class="fa-solid fa-bullhorn mr-2"></i> Mading</a>
+        </div>
+    </header>
+
+    <!-- CONTAINER CONTENT -->
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-24">
+
+        <!-- 1. BERANDA & COVER -->
+        <section id="beranda" class="pt-6">
+            <div class="relative bg-gradient-to-br from-[#0d7a3a] via-[#09522d] to-[#042d17] rounded-[32px] p-8 md:p-20 text-white overflow-hidden shadow-2xl text-center">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="relative max-w-3xl mx-auto space-y-8 flex flex-col items-center">
+                    <!-- Logo Bulat Rapi di Cover -->
+                    <div class="bg-white rounded-full shadow-2xl border-4 border-emerald-500/20 w-36 h-36 md:w-44 md:h-44 overflow-hidden flex items-center justify-center transition transform hover:scale-105 duration-300">
+                        <img src="logo.jpg" alt="Logo RW 011" class="w-full h-full object-cover rounded-full transform scale-105">
+                    </div>
+                    <div class="space-y-4">
+                        <span class="bg-white/10 text-emerald-300 font-extrabold text-xs tracking-widest uppercase px-5 py-2.5 rounded-full border border-white/10 inline-block">Portal Buletin Warga</span>
+                        <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight">RW 011 MEKARINDAH</h1>
+                        <p class="text-base md:text-lg text-emerald-100 font-light leading-relaxed max-w-2xl mx-auto">
+                            Menyajikan informasi, kegiatan, dan perkembangan terkini dari lingkungan RW 011 Mekarindah, Desa Mekarmukti, Kecamatan Cikarang Utara.
+                        </p>
+                    </div>
+                    <div class="border-t border-white/10 pt-8 w-full max-w-md space-y-2 text-xs md:text-sm text-emerald-200">
+                        <p><i class="fa-solid fa-map-location-dot mr-2"></i>Desa Mekarmukti, Kecamatan Cikarang Utara, Kabupaten Bekasi.</p>
+                        <!-- Beri id="idx-edisi" di sini -->
+                        <p class="font-bold text-yellow-400">
+        <i class="fa-solid fa-calendar-check mr-2"></i><span id="idx-edisi">Memuat edisi...</span>
+    </p>
+</div>
+                        
+        </section>
+
+      <!-- 2. SAMBUTAN KETUA RW -->
+<section id="sambutan" class="pt-16">
+    <div class="bg-white rounded-[32px] shadow-sm border border-slate-100/80 overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 md:p-16">
+            <div class="space-y-4">
+                <div class="rounded-2xl overflow-hidden shadow-lg border-4 border-slate-50">
+                    <!-- Foto Ketua RW Dinamis -->
+                    <img id="idx-foto-rw" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80" alt="Bapak Abdul Aziz" class="w-full h-80 object-cover object-top" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80'">
+                </div>
+                <div class="bg-[#0d7a3a]/5 p-4 rounded-2xl text-center border border-[#0d7a3a]/10">
+                    <h4 class="font-bold text-slate-800 text-base">Abdul Aziz</h4>
+                    <p class="text-[11px] text-[#0d7a3a] font-extrabold uppercase tracking-widest mt-1">Ketua RW 011 Mekarindah</p>
+                </div>
+            </div>
+            <div class="md:col-span-2 flex flex-col justify-between">
+                <div class="space-y-6">
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 border-b border-slate-100 pb-4"><i class="fa-solid fa-quote-left text-[#0d7a3a] mr-2 text-3xl"></i>Kata Sambutan Ketua RW</h3>
+                    
+                    <!-- TAMBAHKAN whitespace-pre-line DI SINI -->
+                    <div id="index-sambutan" class="text-slate-600 leading-relaxed space-y-4 text-sm md:text-base font-light whitespace-pre-line">
+                        Memuat sambutan ketua RW...
+                    </div>
+                    
+                </div>
+                <div class="mt-8 pt-6 border-t border-slate-100 text-right">
+                    <p class="text-xs text-slate-400">Tertanda,</p>
+                    <h5 class="text-lg font-bold text-slate-800 mt-1">Abdul Aziz</h5>
+                    <p class="text-[10px] text-[#0d7a3a] font-bold uppercase tracking-widest">Ketua RW 011 Mekarindah</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+        <!-- 3. STRUKTUR & RT -->
+        <section id="struktur" class="pt-16 space-y-12">
+            <!-- Teras Kepengurusan Dinamik -->
+            <div class="bg-white p-8 md:p-12 rounded-[32px] shadow-sm border border-slate-100/80">
+                <div class="text-center max-w-xl mx-auto mb-12">
+                    <span class="text-[#0d7a3a] font-bold text-xs uppercase tracking-widest bg-[#0d7a3a]/10 px-4 py-1.5 rounded-full">Pimpinan Harian</span>
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-3">Teras Kepengurusan RW 011</h3>
+                    <p class="text-xs md:text-sm text-slate-500 mt-2 font-light">Pengambil kebijakan utama operasional lingkungan RW 011 Mekarindah.</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Ketua RW -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center transition hover:shadow-md">
+                        <div class="w-20 h-20 rounded-full mx-auto overflow-hidden border-4 border-emerald-100 mb-3">
+                            <img id="idx-p-ketua-foto" src="" class="w-full h-full object-cover">
+                        </div>
+                        <h4 id="idx-p-ketua-nama" class="font-bold text-slate-800 text-sm md:text-base">Abdul Aziz</h4>
+                        <p class="text-[10px] text-[#0d7a3a] font-extrabold tracking-wider uppercase mt-1">Ketua RW 011</p>
+                    </div>
+                    <!-- Sekretaris -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center transition hover:shadow-md">
+                        <div class="w-20 h-20 rounded-full mx-auto overflow-hidden border-4 border-emerald-100 mb-3">
+                            <img id="idx-p-sekretaris-foto" src="" class="w-full h-full object-cover">
+                        </div>
+                        <h4 id="idx-p-sekretaris-nama" class="font-bold text-slate-800 text-sm md:text-base">Ibu Maya Putri</h4>
+                        <p class="text-[10px] text-[#0d7a3a] font-extrabold tracking-wider uppercase mt-1">Sekretaris RW</p>
+                    </div>
+                    <!-- Kesekretariatan -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center transition hover:shadow-md">
+                        <div class="w-20 h-20 rounded-full mx-auto overflow-hidden border-4 border-emerald-100 mb-3">
+                            <img id="idx-p-kesekretariatan-foto" src="" class="w-full h-full object-cover">
+                        </div>
+                        <h4 id="idx-p-kesekretariatan-nama" class="font-bold text-slate-800 text-sm md:text-base">Bp. Riza Fahri</h4>
+                        <p class="text-[10px] text-[#0d7a3a] font-extrabold tracking-wider uppercase mt-1">Kesekretariatan</p>
+                    </div>
+                    <!-- Bendahara -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center transition hover:shadow-md">
+                        <div class="w-20 h-20 rounded-full mx-auto overflow-hidden border-4 border-emerald-100 mb-3">
+                            <img id="idx-p-bendahara-foto" src="" class="w-full h-full object-cover">
+                        </div>
+                        <h4 id="idx-p-bendahara-nama" class="font-bold text-slate-800 text-sm md:text-base">Bp. H. Sulaiman</h4>
+                        <p class="text-[10px] text-[#0d7a3a] font-extrabold tracking-wider uppercase mt-1">Bendahara</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Koordinator Bidang -->
+            <div class="bg-white p-8 md:p-12 rounded-[32px] shadow-sm border border-slate-100/80">
+                <div class="text-center max-w-xl mx-auto mb-12">
+                    <span class="text-[#0d7a3a] font-bold text-xs uppercase tracking-widest bg-[#0d7a3a]/10 px-4 py-1.5 rounded-full">Tim Operasional</span>
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-3">Koordinator Bidang Kerja</h3>
+                    <p class="text-xs md:text-sm text-slate-500 mt-2 font-light">Para penanggung jawab program teknis di lapangan.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-shield-halved text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">Keamanan & Ketertiban</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Bp. Margono</p></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-tree text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">Pertamanan, Infrastruktur, & Fasilitas</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Bp. Hardi</p></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-flag text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">Hari Besar Nasional & Kumpul Warga</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Bp. Dani</p></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-hand-holding-heart text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">Sosial Warga</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Ibu Ratih</p></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-person-dress text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">PKK</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Ibu Endang</p></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-volleyball text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">Olahraga</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Bp. Doni</p></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-gavel text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">Legalitas & Hukum</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Bp. Adv. Bobby</p></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-store text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">Perekonomian</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Ibu Susan</p></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-heart-pulse text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">Kesehatan</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Ibu Dr. Rani</p></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-trash-can text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">Pengelola Sampah</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Bp. Maman</p></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center gap-4">
+                        <div class="bg-emerald-100 text-[#0d7a3a] p-3 rounded-xl"><i class="fa-solid fa-comment text-lg"></i></div>
+                        <div><h5 class="font-bold text-xs md:text-sm text-slate-800 leading-tight">Komunikasi & Informasi</h5><p class="text-[11px] text-slate-500 mt-1">Koord: Bp. Firman</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RT (100% DINAMIS) -->
+            <div class="bg-white p-8 md:p-12 rounded-[32px] shadow-sm border border-slate-100/80">
+                <div class="text-center max-w-xl mx-auto mb-12">
+                    <span class="text-[#0d7a3a] font-bold text-xs uppercase tracking-widest bg-[#0d7a3a]/10 px-4 py-1.5 rounded-full">Unit Rukun Tetangga</span>
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-3">Rukun Tetangga (RT) Terintegrasi</h3>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+                    <!-- RT 01 -->
+                    <div class="p-4 bg-emerald-50/50 rounded-2xl border border-[#0d7a3a]/10 text-center hover:shadow-sm transition">
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-[#0d7a3a] mx-auto mb-2 shadow-sm">
+                            <img id="idx-rt1-foto" src="" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
+                        </div>
+                        <h4 id="idx-rt1-nama" class="font-bold text-slate-800 text-xs">Loading...</h4>
+                        <p class="text-[9px] text-[#0d7a3a] font-bold uppercase mt-0.5">RT 01</p>
+                    </div>
+                    <!-- RT 02 -->
+                    <div class="p-4 bg-emerald-50/50 rounded-2xl border border-[#0d7a3a]/10 text-center hover:shadow-sm transition">
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-[#0d7a3a] mx-auto mb-2 shadow-sm">
+                            <img id="idx-rt2-foto" src="" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
+                        </div>
+                        <h4 id="idx-rt2-nama" class="font-bold text-slate-800 text-xs">Loading...</h4>
+                        <p class="text-[9px] text-[#0d7a3a] font-bold uppercase mt-0.5">RT 02</p>
+                    </div>
+                    <!-- RT 03 -->
+                    <div class="p-4 bg-emerald-50/50 rounded-2xl border border-[#0d7a3a]/10 text-center hover:shadow-sm transition">
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-[#0d7a3a] mx-auto mb-2 shadow-sm">
+                            <img id="idx-rt3-foto" src="" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
+                        </div>
+                        <h4 id="idx-rt3-nama" class="font-bold text-slate-800 text-xs">Loading...</h4>
+                        <p class="text-[9px] text-[#0d7a3a] font-bold uppercase mt-0.5">RT 03</p>
+                    </div>
+                    <!-- RT 04 -->
+                    <div class="p-4 bg-emerald-50/50 rounded-2xl border border-[#0d7a3a]/10 text-center hover:shadow-sm transition">
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-[#0d7a3a] mx-auto mb-2 shadow-sm">
+                            <img id="idx-rt4-foto" src="" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
+                        </div>
+                        <h4 id="idx-rt4-nama" class="font-bold text-slate-800 text-xs">Loading...</h4>
+                        <p class="text-[9px] text-[#0d7a3a] font-bold uppercase mt-0.5">RT 04</p>
+                    </div>
+                    <!-- RT 05 -->
+                    <div class="p-4 bg-emerald-50/50 rounded-2xl border border-[#0d7a3a]/10 text-center hover:shadow-sm transition">
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-[#0d7a3a] mx-auto mb-2 shadow-sm">
+                            <img id="idx-rt5-foto" src="" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
+                        </div>
+                        <h4 id="idx-rt5-nama" class="font-bold text-slate-800 text-xs">Loading...</h4>
+                        <p class="text-[9px] text-[#0d7a3a] font-bold uppercase mt-0.5">RT 05</p>
+                    </div>
+                    <!-- RT 06 -->
+                    <div class="p-4 bg-emerald-50/50 rounded-2xl border border-[#0d7a3a]/10 text-center hover:shadow-sm transition">
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-[#0d7a3a] mx-auto mb-2 shadow-sm">
+                            <img id="idx-rt6-foto" src="" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
+                        </div>
+                        <h4 id="idx-rt6-nama" class="font-bold text-slate-800 text-xs">Loading...</h4>
+                        <p class="text-[9px] text-[#0d7a3a] font-bold uppercase mt-0.5">RT 06</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. KEGIATAN -->
+        <section id="kegiatan" class="pt-16 space-y-12">
+            <div class="text-center max-w-xl mx-auto">
+                <span class="text-[#0d7a3a] font-bold text-xs uppercase tracking-widest bg-[#0d7a3a]/10 px-4 py-1.5 rounded-full">Laporan Publikasi</span>
+                <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-3">Aktivitas & Kinerja Nyata</h3>
+                <p class="text-xs md:text-sm text-slate-500 mt-2 font-light">Laporan aktual kegiatan berkala rukun warga 011 Mekarindah.</p>
+            </div>
+            
+            <div id="idx-container-kegiatan" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- 5. KEUANGAN & KAS -->
+        <section id="keuangan" class="pt-16 space-y-8">
+            <div class="text-center max-w-xl mx-auto">
+                <span class="text-[#0d7a3a] font-bold text-xs uppercase tracking-widest bg-[#0d7a3a]/10 px-4 py-1.5 rounded-full">Transparansi Finansial</span>
+                <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-3">Laporan Aliran Kas & Keuangan</h3>
+            </div>
+
+            <!-- Ringkasan Finansial -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div><p class="text-[11px] text-slate-400 font-semibold uppercase">Saldo Awal</p><h3 id="idx-saldo-awal" class="text-xl md:text-2xl font-extrabold text-slate-800 mt-1">Rp 50.000.000</h3></div>
+                    <div class="bg-slate-100 text-slate-500 p-3.5 rounded-xl"><i class="fa-solid fa-hourglass-start text-xl"></i></div>
+                </div>
+                <div class="bg-emerald-50/50 p-6 rounded-2xl shadow-sm border border-emerald-100/50 flex items-center justify-between">
+                    <div><p class="text-[11px] text-emerald-600 font-semibold uppercase">Pemasukan</p><h3 id="idx-total-masuk" class="text-xl md:text-2xl font-extrabold text-emerald-700 mt-1">Rp 0</h3></div>
+                    <div class="bg-emerald-600 text-white p-3.5 rounded-xl"><i class="fa-solid fa-circle-arrow-down text-xl"></i></div>
+                </div>
+                <div class="bg-rose-50/50 p-6 rounded-2xl shadow-sm border border-rose-100/50 flex items-center justify-between">
+                    <div><p class="text-[11px] text-rose-600 font-semibold uppercase">Pengeluaran</p><h3 id="idx-total-keluar" class="text-xl md:text-2xl font-extrabold text-rose-700 mt-1">Rp 0</h3></div>
+                    <div class="bg-rose-500 text-white p-3.5 rounded-xl"><i class="fa-solid fa-circle-arrow-up text-xl"></i></div>
+                </div>
+                <div class="bg-[#0d7a3a]/5 p-6 rounded-2xl shadow-sm border border-[#0d7a3a]/10 flex items-center justify-between">
+                    <div><p class="text-[11px] text-[#0d7a3a] font-semibold uppercase">Saldo Akhir</p><h3 id="idx-saldo-akhir" class="text-xl md:text-2xl font-extrabold text-[#0d7a3a] mt-1">Rp 50.000.000</h3></div>
+                    <div class="bg-[#0d7a3a] text-white p-3.5 rounded-xl"><i class="fa-solid fa-wallet text-xl"></i></div>
+                </div>
+            </div>
+
+            <!-- Jurnal Kas -->
+            <div class="bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-slate-100/80">
+                <h4 class="font-extrabold text-slate-800 text-lg mb-6"><i class="fa-solid fa-receipt mr-2 text-[#0d7a3a]"></i>Rincian Mutasi Pembukuan Kas</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 text-xs md:text-sm">
+                                <th class="pb-3 font-semibold">Tanggal</th>
+                                <th class="pb-3 font-semibold">Uraian Transaksi</th>
+                                <th class="pb-3 font-semibold">Kategori</th>
+                                <th class="pb-3 font-semibold text-right">Debit (Masuk)</th>
+                                <th class="pb-3 font-semibold text-right">Kredit (Keluar)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="idx-tabel-kas" class="text-xs md:text-sm divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. PROFIL & PETA WILAYAH -->
+        <section id="profil" class="pt-16 space-y-8">
+            <div class="text-center max-w-xl mx-auto">
+                <span class="text-[#0d7a3a] font-bold text-xs uppercase tracking-widest bg-[#0d7a3a]/10 px-4 py-1.5 rounded-full">Pemetaan Wilayah</span>
+                <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-3">Geografis & Demografi Warga</h3>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Statistik Demografi -->
+                <div class="bg-white p-8 rounded-[24px] shadow-sm border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-extrabold text-slate-800 text-base mb-6"><i class="fa-solid fa-users text-[#0d7a3a] mr-2"></i>Statistik Kependudukan</h4>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-3.5 bg-slate-50 rounded-xl">
+                                <span class="text-xs md:text-sm text-slate-500">Jumlah RT Terdaftar</span>
+                                <span id="idx-stat-rt" class="font-bold text-slate-800">6 RT</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3.5 bg-slate-50 rounded-xl">
+                                <span class="text-xs md:text-sm text-slate-500">Jumlah Kepala Keluarga</span>
+                                <span id="idx-stat-kk" class="font-bold text-slate-800">630 KK</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3.5 bg-slate-50 rounded-xl">
+                                <span class="text-xs md:text-sm text-slate-500">Estimasi Total Jiwa</span>
+                                <span id="idx-stat-jiwa" class="font-bold text-slate-800">2.140 Jiwa</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-6 border-t border-slate-100 mt-6 text-center">
+                        <span class="text-[10px] text-[#0d7a3a] font-bold bg-[#0d7a3a]/10 px-3 py-1.5 rounded-full">Sensus Terakhir: Agustus 2026</span>
+                    </div>
+                </div>
+                <!-- Google Maps -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-[24px] shadow-sm border border-slate-100">
+                    <h4 class="font-extrabold text-slate-800 text-base mb-4"><i class="fa-solid fa-map-marked-alt text-[#0d7a3a] mr-2"></i>Peta Interaktif RW 011</h4>
+                    <div class="rounded-xl overflow-hidden border border-slate-200 shadow-inner h-[280px]">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d12083.10825150267!2d107.16026854637171!3d-6.298106998110302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1smekar%20indah!5e1!3m2!1sid!2sid!4v1784095683736!5m2!1sid!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. LAYANAN & ADUAN -->
+        <section id="layanan" class="pt-16 space-y-12">
+            <div class="text-center max-w-xl mx-auto">
+                <span class="text-[#0d7a3a] font-bold text-xs uppercase tracking-widest bg-[#0d7a3a]/10 px-4 py-1.5 rounded-full">Layanan Mandiri</span>
+                <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-3">Administrasi Surat & Aduan</h3>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Form Pengantar Surat -->
+                <div class="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100">
+                    <h4 class="font-bold text-slate-800 text-lg mb-6"><i class="fa-solid fa-file-signature mr-2 text-[#0d7a3a]"></i>Form Pengantar Surat</h4>
+                    <form id="formSurat" class="space-y-4" onsubmit="ajukanSurat(event)">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Nama Lengkap Pemohon</label>
+                            <input type="text" id="namaSurat" required class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0d7a3a]">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Asal RT</label>
+                                <select id="rtAsal" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0d7a3a]">
+                                    <option>RT 01</option><option>RT 02</option><option>RT 03</option><option>RT 04</option><option>RT 05</option><option>RT 06</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Keperluan Surat</label>
+                                <select id="jenisSurat" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0d7a3a]">
+                                    <option>Surat Pengantar Domisili</option><option>Surat Pengantar KK/KTP</option><option>Surat Pengantar SKTM</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Detail Catatan Tambahan</label>
+                            <textarea id="keperluanSurat" rows="2" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0d7a3a]"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-[#0d7a3a] hover:bg-[#095f2a] text-white font-bold py-3.5 rounded-xl transition duration-300 text-sm tracking-wide">Kirim Berkas Pengajuan</button>
+                    </form>
+                </div>
+
+                <!-- Form Pengaduan -->
+                <div class="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100">
+                    <h4 class="font-bold text-slate-800 text-lg mb-6"><i class="fa-solid fa-triangle-exclamation mr-2 text-rose-600"></i>Pusat Laporan & Aspirasi</h4>
+                    <form id="formAduan" class="space-y-4" onsubmit="kirimAduan(event)">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Nama Pengadu</label>
+                            <input type="text" id="namaPelapor" required class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Isi Laporan / Keluhan</label>
+                            <textarea id="deskripsiAduan" rows="4" required class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="Jelaskan masalah lingkungan Anda..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 rounded-xl transition duration-300 text-sm tracking-wide">Kirim Laporan Ke RW</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. PENGUMUMAN / MADING -->
+        <section id="pengumuman" class="pt-16 pb-24 space-y-12">
+            <div class="text-center max-w-xl mx-auto">
+                <span class="text-[#0d7a3a] font-bold text-xs uppercase tracking-widest bg-[#0d7a3a]/10 px-4 py-1.5 rounded-full">Mading Digital</span>
+                <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-3">Pengumuman Terkini</h3>
+            </div>
+            <div id="idx-container-mading" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+        </section>
+
+    </div>
+
+    <!-- SCRIPT JAVASCRIPT & KONEKSI FIREBASE REALTIME -->
+    <script>
+        // CONFIG FIREBASE ASLI MILIK MAS BRO
+        const firebaseConfig = {
+  apiKey: "AIzaSyB3soQUtEAn0J09uBWQT6JeGhZGnGmCUZc",
+  authDomain: "rw011-mekarindah.firebaseapp.com",
+  projectId: "rw011-mekarindah",
+  storageBucket: "rw011-mekarindah.firebasestorage.app",
+  messagingSenderId: "1080174436962",
+  appId: "1:1080174436962:web:6fdd796771013291b4273b",
+  measurementId: "G-DGH0CZG2GJ"
+};
+
+        // Inisialisasi Firebase secara aman
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 1. MONITORING PROFIL, FINANSIAL, PENGURUS INTI, & 6 RT (SINKRON REALTIME)
+        db.collection("settings").doc("rw_profile").onSnapshot(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                 
+// Memuat data Edisi dari Firestore (misal disimpan di koleksi settings doc rw_profile)
+db.collection("settings").doc("rw_profile").onSnapshot(doc => {
+    if (doc.exists) {
+        const data = doc.data();
+        const elementEdisi = document.getElementById('idx-edisi');
+        if (elementEdisi) {
+            // Jika ada data edisi di Firestore tampilkan, jika kosong pakai fallback
+            elementEdisi.textContent = data.edisi || 'Edisi Agustus 2026';
+        }
+    }
+});
+                
+                // Ringkasan Kas
+                document.getElementById('idx-saldo-awal').innerText = formatRupiah(data.saldo_awal || 50000000);
+                document.getElementById('idx-total-masuk').innerText = "+ " + formatRupiah(data.total_pemasukan || 0);
+                document.getElementById('idx-total-keluar').innerText = "- " + formatRupiah(data.total_pengeluaran || 0);
+                document.getElementById('idx-saldo-akhir').innerText = formatRupiah(data.saldo_akhir || 50000000);
+                
+                // Demografi Stats
+                document.getElementById('idx-stat-rt').innerText = (data.stat_rt_count || 6) + " RT";
+                document.getElementById('idx-stat-kk').innerText = (data.stat_kk_count || 630) + " KK";
+                document.getElementById('idx-stat-jiwa').innerText = (data.stat_jiwa_count || 2140) + " Jiwa";
+                
+                // Kata Sambutan & Foto RW
+                document.getElementById('index-sambutan').innerHTML = `<p>${data.sambutan_text || 'Belum ada sambutan.'}</p>`;
+                if (data.foto_rw) {
+                    document.getElementById('idx-foto-rw').src = data.foto_rw;
+                }
+
+                // Pengurus Inti Realtime
+                document.getElementById('idx-p-ketua-nama').innerText = data.ketua_nama || 'Abdul Aziz';
+                document.getElementById('idx-p-ketua-foto').src = data.ketua_foto || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80';
+                
+                document.getElementById('idx-p-sekretaris-nama').innerText = data.sekretaris_nama || 'Ibu Maya Putri';
+                document.getElementById('idx-p-sekretaris-foto').src = data.sekretaris_foto || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80';
+                
+                document.getElementById('idx-p-kesekretariatan-nama').innerText = data.kesekretariatan_nama || 'Bp. Riza Fahri';
+                document.getElementById('idx-p-kesekretariatan-foto').src = data.kesekretariatan_foto || 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80';
+                
+                document.getElementById('idx-p-bendahara-nama').innerText = data.bendahara_nama || 'Bp. H. Sulaiman';
+                document.getElementById('idx-p-bendahara-foto').src = data.bendahara_foto || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80';
+
+                // 6 RT Realtime dari Database
+                document.getElementById('idx-rt1-nama').innerText = data.rt1_nama || 'Bp. Supardi';
+                document.getElementById('idx-rt1-foto').src = data.rt1_foto || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80';
+
+                document.getElementById('idx-rt2-nama').innerText = data.rt2_nama || 'Bp. Bambang S.';
+                document.getElementById('idx-rt2-foto').src = data.rt2_foto || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80';
+
+                document.getElementById('idx-rt3-nama').innerText = data.rt3_nama || 'Bp. Joko S.';
+                document.getElementById('idx-rt3-foto').src = data.rt3_foto || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80';
+
+                document.getElementById('idx-rt4-nama').innerText = data.rt4_nama || 'Ibu Sri Astuti';
+                document.getElementById('idx-rt4-foto').src = data.rt4_foto || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80';
+
+                document.getElementById('idx-rt5-nama').innerText = data.rt5_nama || 'Bp. H. Mulyono';
+                document.getElementById('idx-rt5-foto').src = data.rt5_foto || 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80';
+
+                document.getElementById('idx-rt6-nama').innerText = data.rt6_nama || 'Bp. Dr. Gunawan';
+                document.getElementById('idx-rt6-foto').src = data.rt6_foto || 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=150&q=80';
+            }
+        });
+
+       // 2. LOAD DATA KEGIATAN (BINGKAI FOTO ANTI-POTONG)
+db.collection("kegiatan").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+    const container = document.getElementById('idx-container-kegiatan');
+    container.innerHTML = '';
+    
+    if (snapshot.empty) {
+        container.innerHTML = `
+            <div class="col-span-3 text-center py-12 text-slate-400">
+                <i class="fa-regular fa-image text-4xl mb-2"></i>
+                <p class="text-sm">Belum ada laporan publikasi kegiatan saat ini.</p>
+            </div>`;
+        return;
+    }
+
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        container.innerHTML += `
+            <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 transition hover:shadow-md flex flex-col h-full">
+                <!-- Bingkai Foto Presisi -->
+                <div class="w-full h-52 bg-slate-50 flex items-center justify-center overflow-hidden border-b border-slate-100/50 p-2">
+                    <img src="${data.fotoUrl}" class="max-h-full max-w-full object-contain rounded-xl transition transform hover:scale-105 duration-300" alt="Foto Kegiatan" onerror="this.src='https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=80'">
+                </div>
+                <!-- Konten -->
+                <div class="p-6 space-y-3 flex-1 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="bg-emerald-50 text-[#0d7a3a] text-[10px] font-bold px-2.5 py-1 rounded-md tracking-wider uppercase inline-block">${data.bidang}</span>
+                        <h4 class="font-bold text-slate-800 leading-snug text-base">${data.judul}</h4>
+                        
+                        <!-- DITAMBAHKAN whitespace-pre-line DI SINI -->
+                        <p class="text-xs text-slate-500 leading-relaxed font-light whitespace-pre-line">${data.deskripsi}</p>
+                    </div>
+                    <span class="text-[10px] text-slate-400 block pt-4 border-t border-slate-50"><i class="fa-regular fa-calendar-check mr-1"></i> ${data.tanggal}</span>
+                </div>
+            </div>
+        `;
+    });
+});
+        // 3. LOAD DATA JURNAL KAS KEUANGAN
+        db.collection("keuangan").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+            const tbody = document.getElementById('idx-tabel-kas');
+            tbody.innerHTML = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const debitText = data.debit > 0 ? `+ ${formatRupiah(data.debit)}` : '-';
+                const kreditText = data.kredit > 0 ? `- ${formatRupiah(data.kredit)}` : '-';
+                const badgeColor = data.debit > 0 ? 'bg-emerald-50 text-[#0d7a3a]' : 'bg-rose-50 text-rose-800';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="py-4 text-xs">${data.tanggal}</td>
+                        <td class="py-4 font-semibold text-slate-800 text-xs">${data.uraian}</td>
+                        <td class="py-4"><span class="${badgeColor} px-2.5 py-1 rounded-full text-[10px] font-bold">${data.bidang}</span></td>
+                        <td class="py-4 text-right text-emerald-600 font-bold text-xs">${debitText}</td>
+                        <td class="py-4 text-right text-rose-600 font-bold text-xs">${kreditText}</td>
+                    </tr>
+                `;
+            });
+        });
+
+        // 4. LOAD MADING DIGITAL
+        db.collection("mading").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+            const container = document.getElementById('idx-container-mading');
+            container.innerHTML = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                container.innerHTML += `
+                    <div class="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 border-l-[6px] border-l-[#0d7a3a] space-y-4">
+                        <span class="bg-emerald-50 text-[#0d7a3a] text-[10px] font-bold px-3 py-1 rounded-md uppercase tracking-wider">${data.kategori}</span>
+                        <h4 class="font-extrabold text-slate-900 text-lg leading-snug">${data.judul}</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed font-light">${data.isi}</p>
+                        <div class="pt-4 border-t border-slate-50 text-xs text-slate-400 flex items-center gap-1.5">
+                            <i class="fa-regular fa-clock"></i> Dipublikasikan: ${data.tanggal}
+                        </div>
+                    </div>
+                `;
+            });
+        });
+// Dipasang di index.html
+db.collection("mading")
+  .orderBy("createdAt", "desc")
+  .limit(10) // <-- Hanya mengambil 10 pengumuman paling baru
+  .onSnapshot(snapshot => {
+      const container = document.getElementById('container-mading-warga');
+      container.innerHTML = '';
+      
+      if(snapshot.empty) {
+          container.innerHTML = '<p class="text-slate-400 text-center py-4">Tidak ada pengumuman saat ini.</p>';
+          return;
+      }
+
+      snapshot.forEach(doc => {
+          const d = doc.data();
+          // Render item mading ke UI warga di sini...
+      });
+  });
+
+
+        // 5. PENGAJUAN SURAT & ADUAN WARGA
+        function ajukanSurat(event) {
+            event.preventDefault();
+            const nama = document.getElementById('namaSurat').value;
+            const rt = document.getElementById('rtAsal').value;
+            const jenis = document.getElementById('jenisSurat').value;
+            const keperluan = document.getElementById('keperluanSurat').value;
+
+            db.collection("layanan").add({
+                nama, rt, jenis, keperluan, status: 'Menunggu RT',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert(`Pengajuan Surat Pengantar atas nama ${nama} berhasil dikirim!`);
+                document.getElementById('formSurat').reset();
+            });
+        }
+
+        function kirimAduan(event) {
+            event.preventDefault();
+            const nama = document.getElementById('namaPelapor').value;
+            const deskripsi = document.getElementById('deskripsiAduan').value;
+
+            db.collection("aduan").add({
+                nama, deskripsi,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert(`Laporan aduan berhasil dikirim ke Pengurus RW!`);
+                document.getElementById('formAduan').reset();
+            });
+        }
+
+        // Helper: Format Rupiah
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+        }
+
+        // Hamburger Menu Mobile Toggle
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>

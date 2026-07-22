@@ -607,21 +607,13 @@ db.collection("kegiatan").orderBy("timestamp", "desc").onSnapshot(snapshot => {
                         <div class="pt-4 border-t border-slate-50 text-xs text-slate-400 flex items-center gap-1.5">
                             <i class="fa-regular fa-clock"></i> Dipublikasikan: ${data.tanggal}
                         </div>
-                    </div>
-                `;
-            });
-        });
-// Dipasang di index.html
+                   // Listener Mading Warga (Sudah Bersih & Bebas Error Sintaks)
 db.collection("mading")
   .orderBy("createdAt", "desc")
   .limit(10)
   .onSnapshot(snapshot => {
       const container = document.getElementById('container-mading-warga');
-      
-      // Amankan dari crash jika elemen HTML tidak ada
-      if (!container) {
-          return;
-      }
+      if (!container) return;
 
       container.innerHTML = '';
       
@@ -632,7 +624,6 @@ db.collection("mading")
 
       snapshot.forEach(doc => {
           const data = doc.data();
-          // Masukkan elemen HTML mading
           container.innerHTML += `
               <div class="p-4 mb-3 bg-white/5 rounded-xl border border-white/10">
                   <h4 class="font-bold text-amber-400">${data.judul || 'Pengumuman'}</h4>
@@ -642,7 +633,7 @@ db.collection("mading")
       });
   }, error => {
       console.error("Gagal memuat mading:", error);
-  });        // 5. PENGAJUAN SURAT & ADUAN WARGA
+  });  });        // 5. PENGAJUAN SURAT & ADUAN WARGA
         function ajukanSurat(event) {
             event.preventDefault();
             const nama = document.getElementById('namaSurat').value;

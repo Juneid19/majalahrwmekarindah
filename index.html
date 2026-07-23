@@ -235,15 +235,15 @@
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // 1. LISTEN DATA PROFIL & EDISI MADING
+   // 1. LISTEN DATA PROFIL & EDISI MADING
     db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
         if (doc.exists) {
             const d = doc.data();
 
-            // Render Edisi Mading (Mendukung id "view-edisi-mading" & "view-mading-edisi")
+            // Render Edisi Mading (Mengecek semua kemungkinan variabel nama edisi)
             const elemEdisi = document.getElementById("view-edisi-mading") || document.getElementById("view-mading-edisi");
             if (elemEdisi) {
-                elemEdisi.innerText = d.mading_judul || d.edisi_mading || d.judul_mading || "Edisi Mading RW Mekarindah";
+                elemEdisi.innerText = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || "Edisi Mading RW Mekarindah";
             }
 
             // Sambutan Ketua RW
@@ -318,7 +318,7 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         }
     });
 
-    // 2. LISTEN LAPORAN KEGIATAN (Mendukung id "view-container-kegiatan" & "container-kegiatan")
+    // 2. LISTEN LAPORAN KEGIATAN
     db.collection("kegiatan").onSnapshot(snapshot => {
         const containerKegiatan = document.getElementById("view-container-kegiatan") || document.getElementById("container-kegiatan");
         if (!containerKegiatan) return;
@@ -354,9 +354,9 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         });
     });
 
-    // 3. LISTEN LAPORAN KAS / KEUANGAN
+    // 3. LISTEN LAPORAN KAS / KEUANGAN (DENGAN CONVERT ANGKA)
     db.collection("kas").onSnapshot(snapshot => {
-        const containerKas = document.getElementById("tabel-kas-index") || document.getElementById("view-tabel-kas");
+        const containerKas = document.getElementById("view-tabel-kas") || document.getElementById("tabel-kas-index");
         let totalDebit = 0;
         let totalKredit = 0;
 
@@ -367,32 +367,45 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
 
         docs.forEach(data => {
-            const jumlah = Number(data.jumlah) || 0;
-            const jenis = (data.jenis || '').toLowerCase();
+            // Parsing nominal agar tetap berupa angka walau tersimpan dalam bentuk string
+            let nominal = 0;
+            if (typeof data.jumlah === "number") {
+                nominal = data.jumlah;
+            } else if (typeof data.jumlah === "string") {
+                nominal = parseFloat(data.jumlah.replace(/[^0-9.-]/g, '')) || 0;
+            } else if (data.nominal) {
+                nominal = parseFloat(String(data.nominal).replace(/[^0-9.-]/g, '')) || 0;
+            }
 
-            if (jenis === 'debit' || jenis === 'masuk') totalDebit += jumlah;
-            if (jenis === 'kredit' || jenis === 'keluar') totalKredit += jumlah;
+            const jenis = String(data.jenis || data.kategori || data.tipe || '').toLowerCase();
+            const isDebit = (jenis === 'debit' || jenis === 'masuk' || jenis === 'pemasukan');
+
+            if (isDebit) {
+                totalDebit += nominal;
+            } else {
+                totalKredit += nominal;
+            }
 
             if (containerKas) {
-                const isDebit = (jenis === 'debit' || jenis === 'masuk');
                 containerKas.innerHTML += `
                     <tr class="border-b text-xs">
                         <td class="p-2.5">${data.tanggal || '-'}</td>
-                        <td class="p-2.5 font-medium text-slate-800">${data.keterangan || data.uraian || '-'}</td>
-                        <td class="p-2.5 ${isDebit ? 'text-green-600 font-bold' : 'text-slate-400'}">${isDebit ? 'Rp ' + jumlah.toLocaleString('id-ID') : '-'}</td>
-                        <td class="p-2.5 ${!isDebit ? 'text-red-600 font-bold' : 'text-slate-400'}">${!isDebit ? 'Rp ' + jumlah.toLocaleString('id-ID') : '-'}</td>
+                        <td class="p-2.5 font-medium text-slate-800">${data.keterangan || data.uraian || data.deskripsi || '-'}</td>
+                        <td class="p-2.5 ${isDebit ? 'text-green-600 font-bold' : 'text-slate-400'}">${isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
+                        <td class="p-2.5 ${!isDebit ? 'text-red-600 font-bold' : 'text-slate-400'}">${!isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
                     </tr>
                 `;
             }
         });
 
-        // Update Total & Saldo Akhir Kas
+        // Hitung Saldo Akhir
         const saldoAkhir = totalDebit - totalKredit;
+
         if (document.getElementById("kas-total-masuk")) document.getElementById("kas-total-masuk").innerText = "Rp " + totalDebit.toLocaleString('id-ID');
         if (document.getElementById("kas-total-keluar")) document.getElementById("kas-total-keluar").innerText = "Rp " + totalKredit.toLocaleString('id-ID');
         if (document.getElementById("kas-saldo-akhir")) document.getElementById("kas-saldo-akhir").innerText = "Rp " + saldoAkhir.toLocaleString('id-ID');
     });
-
+	
     // 4. KIRIM ADUAN
     function kirimAduan(e) {
         e.preventDefault();

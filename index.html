@@ -14,7 +14,7 @@
 
     <style>
         .gradient-bg {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #0d7a3a 0%, #0f172a 100%);
         }
     </style>
 </head>
@@ -119,6 +119,13 @@
     <h3 class="text-xl font-bold text-slate-800 mb-4 border-l-4 border-blue-600 pl-3">Daftar Ketua RT & Warga</h3>
     <div id="container-rt-warga" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <!-- Dipasang otomatis via JS -->
+    </div>
+</div>
+<!-- DAFTAR KOORDINATOR SEKSI -->
+<div class="mt-8">
+    <h3 class="text-xl font-bold text-slate-800 mb-4 border-l-4 border-blue-600 pl-3">Koordinator Seksi RW</h3>
+    <div id="container-seksi-warga" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        <!-- Dipasang via JS -->
     </div>
 </div>
         </section>
@@ -287,6 +294,35 @@
         }
     }
 });
+
+// Render Koordinator Seksi di index.html
+const containerSeksi = document.getElementById("container-seksi-warga");
+if (containerSeksi && d.data_seksi) {
+    const listSeksi = [
+        { id: "keamanan", nama: "Seksi Keamanan" },
+        { id: "pertamanan", nama: "Seksi Pertamanan" },
+        { id: "hari_besar", nama: "Seksi Hari Besar" },
+        { id: "sosial", nama: "Seksi Sosial Warga" },
+        { id: "pkk", nama: "Seksi PKK" },
+        { id: "olahraga", nama: "Seksi Olahraga" },
+        { id: "hukum", nama: "Seksi Hukum" },
+        { id: "ekonomi", nama: "Seksi Ekonomi" },
+        { id: "kesehatan", nama: "Seksi Kesehatan" },
+        { id: "sampah", nama: "Seksi Sampah" },
+        { id: "komunikasi", nama: "Seksi Komunikasi" }
+    ];
+
+    containerSeksi.innerHTML = "";
+    listSeksi.forEach(s => {
+        const namaKoordinator = d.data_seksi[s.id] || "Belum diisi";
+        containerSeksi.innerHTML += `
+            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-[11px] font-semibold text-blue-600">${s.nama}</p>
+                <p class="font-bold text-slate-800 text-xs mt-0.5">${namaKoordinator}</p>
+            </div>
+        `;
+    });
+}
 
         // 2. Load Laporan Kegiatan
         db.collection("kegiatan").orderBy("tanggal", "desc").onSnapshot(snapshot => {

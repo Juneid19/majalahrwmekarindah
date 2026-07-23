@@ -542,35 +542,18 @@ db.collection("mading")
                 document.getElementById('idx-p-bendahara-nama').innerText = data.bendahara_nama || 'Bp. H. Sulaiman';
                 document.getElementById('idx-p-bendahara-foto').src = data.bendahara_foto || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80';
 
-             // (Mulai Baris 545)
-                document.getElementById('idx-rt2-foto').src = data.rt2_foto || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80';
-
-                document.getElementById('idx-rt3-nama').innerText = data.rt3_nama || 'Bp. Joko S.';
-                document.getElementById('idx-rt3-foto').src = data.rt3_foto || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80';
-
-                document.getElementById('idx-rt4-nama').innerText = data.rt4_nama || 'Ibu Sri Astuti';
-                document.getElementById('idx-rt4-foto').src = data.rt4_foto || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80';
-
-                document.getElementById('idx-rt5-nama').innerText = data.rt5_nama || 'Bp. H. Mulyono';
-                document.getElementById('idx-rt5-foto').src = data.rt5_foto || 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80';
-
-                document.getElementById('idx-rt6-nama').innerText = data.rt6_nama || 'Bp. Dr. Gunawan';
+             document.getElementById('idx-rt6-nama').innerText = data.rt6_nama || 'Bp. Dr. Gunawan';
                 document.getElementById('idx-rt6-foto').src = data.rt6_foto || 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=150&q=80';
             }
+        }, err => {
+            console.error("Error rw_profile:", err);
         });
 
         // 2. LOAD DATA KEGIATAN (BINGKAI FOTO ANTI-POTONG)
         db.collection("kegiatan").orderBy("timestamp", "desc").onSnapshot(snapshot => {
             const container = document.getElementById('idx-container-kegiatan');
-            if (container) {
-                container.innerHTML = '';
-            }    if (snapshot.empty) {
-        container.innerHTML = `
-            <div class="col-span-3 text-center py-12 text-slate-400">
-                <i class="fa-regular fa-image text-4xl mb-2"></i>
-                <p class="text-sm">Belum ada laporan publikasi kegiatan saat ini.</p>
-            </div>`;
-        return;
+            if (!container) return;
+            container.innerHTML = '';
     }
 
     snapshot.forEach(doc => {

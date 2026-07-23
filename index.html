@@ -252,43 +252,31 @@
   measurementId: "G-DGH0CZG2GJ"
 };
 
-<!-- KODE HTML UTAMA KAMU DI ATAS -->
-
+<!-- ========================================== -->
+    <!-- SCRIPT UTAMA FIREBASE & RENDER MAJALAH RW  -->
     <!-- ========================================== -->
-    <!-- SCRIPT UTAMA (PASTIKAN HANYA ADA 1 TAG SCRIPT DI SINI) -->
-    <!-- ========================================== -->
-    
+    <script>
       // Inisialisasi Firebase
-      if (!firebase.apps.length) {
+      if (typeof firebase !== 'undefined' && !firebase.apps.length) {
           firebase.initializeApp(firebaseConfig);
       }
       const db = firebase.firestore();
 
-      // 1. LISTEN DATA PROFIL, EDISI MADING, PENGURUS, RT, & SEKSI
+      // 1. LISTEN SETTINGS & PROFIL (Termasuk Edisi Mading)
       db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
           if (doc.exists) {
               const d = doc.data();
 
-              // A. Edisi Mading
-              let edisiVal = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || d.periode;
-              if (!edisiVal) {
-                  for (let k in d) {
-                      if (k.toLowerCase().includes("edisi") || k.toLowerCase().includes("mading")) {
-                          edisiVal = d[k];
-                          break;
-                      }
-                  }
-              }
-              const elEdisi = document.getElementById("view-edisi-mading") || document.getElementById("view-mading-edisi");
-              if (elEdisi) {
-                  elEdisi.innerText = edisiVal || "Edisi Mading RW Mekarindah";
-              }
+              // --- A. Render Edisi Mading ---
+              const edisiVal = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.periode || "Edisi Mading RW Mekarindah";
+              const elEdisi = document.getElementById("view-edisi-mading");
+              if (elEdisi) elEdisi.innerText = edisiVal;
 
-              // B. Sambutan RW
+              // --- B. Sambutan Ketua RW ---
               if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
               if (document.getElementById("view-sambutan-isi")) document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "";
 
-              // C. Pengurus Inti
+              // --- C. Pengurus Inti ---
               const defaultFoto = "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Pengurus";
               if (document.getElementById("view-foto-rw")) document.getElementById("view-foto-rw").src = d.foto_rw || defaultFoto;
               if (document.getElementById("view-foto-rw-2")) document.getElementById("view-foto-rw-2").src = d.foto_rw || defaultFoto;
@@ -300,7 +288,7 @@
               if (document.getElementById("view-bendahara")) document.getElementById("view-bendahara").innerText = d.bendahara || "-";
               if (document.getElementById("view-foto-bendahara")) document.getElementById("view-foto-bendahara").src = d.foto_bendahara || defaultFoto;
 
-              // D. Render Kartu RT 01 - RT 06
+              // --- D. Kartu RT 01 - RT 06 ---
               const containerRT = document.getElementById("container-rt-warga") || document.getElementById("view-container-rt");
               if (containerRT) {
                   containerRT.innerHTML = "";
@@ -325,7 +313,7 @@
                   }
               }
 
-              // E. Render 11 Seksi
+              // --- E. 11 Koordinator Seksi ---
               const containerSeksi = document.getElementById("container-seksi-warga") || document.getElementById("view-container-seksi");
               if (containerSeksi) {
                   const listSeksi = [
@@ -358,7 +346,7 @@
 
       // 2. LISTEN LAPORAN KEGIATAN
       db.collection("kegiatan").onSnapshot(snapshot => {
-          const containerKegiatan = document.getElementById("view-container-kegiatan") || document.getElementById("container-kegiatan");
+          const containerKegiatan = document.getElementById("view-container-kegiatan") || document.getElementById("container-kegiatan") || document.getElementById("view-container-mading");
           if (!containerKegiatan) return;
 
           containerKegiatan.innerHTML = "";
@@ -392,12 +380,12 @@
           });
       }, err => console.error("Error Kegiatan:", err));
 
-      // 3. LISTEN LAPORAN KAS / KEUANGAN
+      // 3. LISTEN LAPORAN KAS / KEUANGAN (Disesuaikan ID Presisi)
       db.collection("kas").onSnapshot(snapshot => {
           let totalDebit = 0;
           let totalKredit = 0;
 
-          const containerKas = document.getElementById("view-tabel-kas") || document.getElementById("tabel-kas-index");
+          const containerKas = document.getElementById("view-tabel-kas");
           if (containerKas) containerKas.innerHTML = "";
 
           const docs = [];
@@ -405,8 +393,8 @@
           docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
 
           docs.forEach(data => {
-              const nominal = Number(data.jumlah) || 0;
-              const jenis = String(data.jenis || '').toLowerCase();
+              const nominal = Number(data.jumlah) || Number(data.nominal) || 0;
+              const jenis = String(data.jenis || data.tipe || '').toLowerCase();
               const isDebit = (jenis === 'debit' || jenis === 'masuk' || jenis === 'pemasukan');
 
               if (isDebit) {
@@ -419,7 +407,7 @@
                   containerKas.innerHTML += `
                       <tr class="border-b text-xs">
                           <td class="p-2.5">${data.tanggal || '-'}</td>
-                          <td class="p-2.5 font-medium text-slate-800">${data.keterangan || '-'}</td>
+                          <td class="p-2.5 font-medium text-slate-800">${data.keterangan || data.uraian || '-'}</td>
                           <td class="p-2.5 ${isDebit ? 'text-green-600 font-bold' : 'text-slate-400'}">${isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
                           <td class="p-2.5 ${!isDebit ? 'text-red-600 font-bold' : 'text-slate-400'}">${!isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
                       </tr>
@@ -427,80 +415,39 @@
               }
           });
 
-          // Hitung Saldo
+          // Hitung Saldo Akhir
           const saldoAkhir = totalDebit - totalKredit;
+          const fmtMasuk = "Rp " + totalDebit.toLocaleString('id-ID');
+          const fmtKeluar = "Rp " + totalKredit.toLocaleString('id-ID');
+          const fmtSaldo = "Rp " + saldoAkhir.toLocaleString('id-ID');
 
-          // Tampilkan Total
-          const elMasuk = document.getElementById("kas-total-masuk");
-          const elKeluar = document.getElementById("kas-total-keluar");
-          const elSaldo = document.getElementById("kas-saldo-akhir");
+          // Tembak ID yang terdeteksi di Console
+          if (document.getElementById("kas-total-masuk")) document.getElementById("kas-total-masuk").innerText = fmtMasuk;
+          if (document.getElementById("kas-total-keluar")) document.getElementById("kas-total-keluar").innerText = fmtKeluar;
+          if (document.getElementById("kas-saldo-akhir")) document.getElementById("kas-saldo-akhir").innerText = fmtSaldo;
+          if (document.getElementById("view-saldo-kas")) document.getElementById("view-saldo-kas").innerText = fmtSaldo;
 
-          if (elMasuk) elMasuk.innerText = "Rp " + totalDebit.toLocaleString('id-ID');
-          if (elKeluar) elKeluar.innerText = "Rp " + totalKredit.toLocaleString('id-ID');
-          if (elSaldo) elSaldo.innerText = "Rp " + saldoAkhir.toLocaleString('id-ID');
       }, err => console.error("Error Kas:", err));
 
       // 4. KIRIM ADUAN WARGA
       function kirimAduan(e) {
           e.preventDefault();
-          const nama = document.getElementById("aduan-nama").value;
-          const rt = document.getElementById("aduan-rt").value;
-          const pesan = document.getElementById("aduan-pesan").value;
+          const elNama = document.getElementById("aduan-nama");
+          const elRt = document.getElementById("aduan-rt");
+          const elPesan = document.getElementById("aduan-pesan");
+
+          if (!elNama || !elPesan) return;
 
           db.collection("aduan").add({
-              nama: nama,
-              rt: rt,
-              pesan: pesan,
+              nama: elNama.value,
+              rt: elRt ? elRt.value : "-",
+              pesan: elPesan.value,
               created_at: firebase.firestore.FieldValue.serverTimestamp()
           }).then(() => {
               alert("Terima kasih, aduan/masukan Anda telah terkirim!");
               e.target.reset();
           }).catch(err => alert("Gagal mengirim: " + err.message));
       }
-// ==========================================
-    // FORCE UPDATE EDISI MADING & SALDO KEUANGAN
-    // ==========================================
-    db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
-        if (doc.exists) {
-            const d = doc.data();
-            let edisi = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.periode || "Edisi Mading RW Mekarindah";
-            
-            // Paksa update ke elemen ber-ID edisi
-            ["view-edisi-mading", "view-mading-edisi", "edisi-mading", "mading-edisi", "view-edisi", "edisi"].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerText = edisi;
-            });
-        }
-    });
-
-    db.collection("kas").onSnapshot(snapshot => {
-        let debit = 0;
-        let kredit = 0;
-
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            const nom = Number(data.jumlah) || Number(data.nominal) || 0;
-            const jns = String(data.jenis || data.tipe || '').toLowerCase();
-
-            if (jns === 'debit' || jns === 'masuk' || jns === 'pemasukan') {
-                debit += nom;
-            } else {
-                kredit += nom;
-            }
-        });
-
-        const saldo = debit - kredit;
-
-        const fmtMasuk = "Rp " + debit.toLocaleString('id-ID');
-        const fmtKeluar = "Rp " + kredit.toLocaleString('id-ID');
-        const fmtSaldo = "Rp " + saldo.toLocaleString('id-ID');
-
-        // Paksa update ke elemen ber-ID kas
-        ["kas-total-masuk", "view-kas-masuk", "total-masuk", "view-total-masuk"].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = fmtMasuk; });
-        ["kas-total-keluar", "view-kas-keluar", "total-keluar", "view-total-keluar"].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = fmtKeluar; });
-        ["kas-saldo-akhir", "view-kas-saldo", "view-saldo-akhir", "saldo-akhir", "saldo", "view-saldo"].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = fmtSaldo; });
-    });
-	  
     </script>
 </body>
 </html>

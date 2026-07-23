@@ -457,6 +457,50 @@
               e.target.reset();
           }).catch(err => alert("Gagal mengirim: " + err.message));
       }
+// ==========================================
+    // FORCE UPDATE EDISI MADING & SALDO KEUANGAN
+    // ==========================================
+    db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
+        if (doc.exists) {
+            const d = doc.data();
+            let edisi = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.periode || "Edisi Mading RW Mekarindah";
+            
+            // Paksa update ke elemen ber-ID edisi
+            ["view-edisi-mading", "view-mading-edisi", "edisi-mading", "mading-edisi", "view-edisi", "edisi"].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerText = edisi;
+            });
+        }
+    });
+
+    db.collection("kas").onSnapshot(snapshot => {
+        let debit = 0;
+        let kredit = 0;
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const nom = Number(data.jumlah) || Number(data.nominal) || 0;
+            const jns = String(data.jenis || data.tipe || '').toLowerCase();
+
+            if (jns === 'debit' || jns === 'masuk' || jns === 'pemasukan') {
+                debit += nom;
+            } else {
+                kredit += nom;
+            }
+        });
+
+        const saldo = debit - kredit;
+
+        const fmtMasuk = "Rp " + debit.toLocaleString('id-ID');
+        const fmtKeluar = "Rp " + kredit.toLocaleString('id-ID');
+        const fmtSaldo = "Rp " + saldo.toLocaleString('id-ID');
+
+        // Paksa update ke elemen ber-ID kas
+        ["kas-total-masuk", "view-kas-masuk", "total-masuk", "view-total-masuk"].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = fmtMasuk; });
+        ["kas-total-keluar", "view-kas-keluar", "total-keluar", "view-total-keluar"].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = fmtKeluar; });
+        ["kas-saldo-akhir", "view-kas-saldo", "view-saldo-akhir", "saldo-akhir", "saldo", "view-saldo"].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = fmtSaldo; });
+    });
+	  
     </script>
 </body>
 </html>

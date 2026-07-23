@@ -252,206 +252,211 @@
   measurementId: "G-DGH0CZG2GJ"
 };
 
-<script>
-    // Inisialisasi Firebase
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
+<!-- KODE HTML UTAMA KAMU DI ATAS -->
 
-    // 1. LISTEN DATA PROFIL, EDISI MADING, PENGURUS, RT, & SEKSI
-    db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
-        if (doc.exists) {
-            const d = doc.data();
+    <!-- ========================================== -->
+    <!-- SCRIPT UTAMA (PASTIKAN HANYA ADA 1 TAG SCRIPT DI SINI) -->
+    <!-- ========================================== -->
+    <script>
+      // Inisialisasi Firebase
+      if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+      }
+      const db = firebase.firestore();
 
-            // --- A. Render Edisi Mading ---
-            let edisiVal = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || d.periode;
-            if (!edisiVal) {
-                for (let k in d) {
-                    if (k.toLowerCase().includes("edisi") || k.toLowerCase().includes("mading")) {
-                        edisiVal = d[k];
-                        break;
-                    }
-                }
-            }
-            const elEdisi = document.getElementById("view-edisi-mading") || document.getElementById("view-mading-edisi");
-            if (elEdisi) {
-                elEdisi.innerText = edisiVal || "Edisi Mading RW Mekarindah";
-            }
+      // 1. LISTEN DATA PROFIL, EDISI MADING, PENGURUS, RT, & SEKSI
+      db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
+          if (doc.exists) {
+              const d = doc.data();
 
-            // --- B. Sambutan Ketua RW ---
-            if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
-            if (document.getElementById("view-sambutan-isi")) document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "";
+              // A. Edisi Mading
+              let edisiVal = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || d.periode;
+              if (!edisiVal) {
+                  for (let k in d) {
+                      if (k.toLowerCase().includes("edisi") || k.toLowerCase().includes("mading")) {
+                          edisiVal = d[k];
+                          break;
+                      }
+                  }
+              }
+              const elEdisi = document.getElementById("view-edisi-mading") || document.getElementById("view-mading-edisi");
+              if (elEdisi) {
+                  elEdisi.innerText = edisiVal || "Edisi Mading RW Mekarindah";
+              }
 
-            // --- C. Pengurus Inti ---
-            const defaultFoto = "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Pengurus";
-            if (document.getElementById("view-foto-rw")) document.getElementById("view-foto-rw").src = d.foto_rw || defaultFoto;
-            if (document.getElementById("view-foto-rw-2")) document.getElementById("view-foto-rw-2").src = d.foto_rw || defaultFoto;
-            if (document.getElementById("view-ketua-rw")) document.getElementById("view-ketua-rw").innerText = d.ketua || "-";
+              // B. Sambutan RW
+              if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
+              if (document.getElementById("view-sambutan-isi")) document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "";
 
-            if (document.getElementById("view-sekretaris")) document.getElementById("view-sekretaris").innerText = d.sekretaris || "-";
-            if (document.getElementById("view-foto-sekretaris")) document.getElementById("view-foto-sekretaris").src = d.foto_sekretaris || defaultFoto;
+              // C. Pengurus Inti
+              const defaultFoto = "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Pengurus";
+              if (document.getElementById("view-foto-rw")) document.getElementById("view-foto-rw").src = d.foto_rw || defaultFoto;
+              if (document.getElementById("view-foto-rw-2")) document.getElementById("view-foto-rw-2").src = d.foto_rw || defaultFoto;
+              if (document.getElementById("view-ketua-rw")) document.getElementById("view-ketua-rw").innerText = d.ketua || "-";
 
-            if (document.getElementById("view-bendahara")) document.getElementById("view-bendahara").innerText = d.bendahara || "-";
-            if (document.getElementById("view-foto-bendahara")) document.getElementById("view-foto-bendahara").src = d.foto_bendahara || defaultFoto;
+              if (document.getElementById("view-sekretaris")) document.getElementById("view-sekretaris").innerText = d.sekretaris || "-";
+              if (document.getElementById("view-foto-sekretaris")) document.getElementById("view-foto-sekretaris").src = d.foto_sekretaris || defaultFoto;
 
-            // --- D. Render Kartu RT 01 - RT 06 ---
-            const containerRT = document.getElementById("container-rt-warga") || document.getElementById("view-container-rt");
-            if (containerRT) {
-                containerRT.innerHTML = "";
-                for (let i = 1; i <= 6; i++) {
-                    const rtNum = String(i).padStart(2, '0');
-                    const rtInfo = (d.data_rt && d.data_rt[`rt_${rtNum}`]) ? d.data_rt[`rt_${rtNum}`] : {};
-                    
-                    const namaRT = rtInfo.nama || `Ketua RT ${rtNum}`;
-                    const fotoRT = rtInfo.foto || `https://dummyimage.com/200x200/3b82f6/ffffff.png&text=RT+${rtNum}`;
-                    const jumlahKK = rtInfo.kk || 0;
+              if (document.getElementById("view-bendahara")) document.getElementById("view-bendahara").innerText = d.bendahara || "-";
+              if (document.getElementById("view-foto-bendahara")) document.getElementById("view-foto-bendahara").src = d.foto_bendahara || defaultFoto;
 
-                    containerRT.innerHTML += `
-                        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
-                            <div class="w-14 h-14 mx-auto mb-2 rounded-full overflow-hidden border border-slate-300">
-                                <img src="${fotoRT}" alt="RT ${rtNum}" class="w-full h-full object-cover" onerror="this.src='https://dummyimage.com/200x200/cccccc/ffffff.png&text=RT+${rtNum}'">
-                            </div>
-                            <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">RT ${rtNum}</span>
-                            <p class="font-bold text-slate-800 text-xs mt-1 truncate">${namaRT}</p>
-                            <p class="text-[11px] text-slate-500">${jumlahKK} KK</p>
-                        </div>
-                    `;
-                }
-            }
+              // D. Render Kartu RT 01 - RT 06
+              const containerRT = document.getElementById("container-rt-warga") || document.getElementById("view-container-rt");
+              if (containerRT) {
+                  containerRT.innerHTML = "";
+                  for (let i = 1; i <= 6; i++) {
+                      const rtNum = String(i).padStart(2, '0');
+                      const rtInfo = (d.data_rt && d.data_rt[`rt_${rtNum}`]) ? d.data_rt[`rt_${rtNum}`] : {};
+                      
+                      const namaRT = rtInfo.nama || `Ketua RT ${rtNum}`;
+                      const fotoRT = rtInfo.foto || `https://dummyimage.com/200x200/3b82f6/ffffff.png&text=RT+${rtNum}`;
+                      const jumlahKK = rtInfo.kk || 0;
 
-            // --- E. Render 11 Koordinator Seksi ---
-            const containerSeksi = document.getElementById("container-seksi-warga") || document.getElementById("view-container-seksi");
-            if (containerSeksi) {
-                const listSeksi = [
-                    { id: "keamanan", nama: "Seksi Keamanan" },
-                    { id: "pertamanan", nama: "Seksi Pertamanan" },
-                    { id: "hari_besar", nama: "Seksi Hari Besar" },
-                    { id: "sosial", nama: "Seksi Sosial Warga" },
-                    { id: "pkk", nama: "Seksi PKK" },
-                    { id: "olahraga", nama: "Seksi Olahraga" },
-                    { id: "hukum", nama: "Seksi Hukum" },
-                    { id: "ekonomi", nama: "Seksi Ekonomi" },
-                    { id: "kesehatan", nama: "Seksi Kesehatan" },
-                    { id: "sampah", nama: "Seksi Sampah" },
-                    { id: "komunikasi", nama: "Seksi Komunikasi" }
-                ];
+                      containerRT.innerHTML += `
+                          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
+                              <div class="w-14 h-14 mx-auto mb-2 rounded-full overflow-hidden border border-slate-300">
+                                  <img src="${fotoRT}" alt="RT ${rtNum}" class="w-full h-full object-cover" onerror="this.src='https://dummyimage.com/200x200/cccccc/ffffff.png&text=RT+${rtNum}'">
+                              </div>
+                              <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">RT ${rtNum}</span>
+                              <p class="font-bold text-slate-800 text-xs mt-1 truncate">${namaRT}</p>
+                              <p class="text-[11px] text-slate-500">${jumlahKK} KK</p>
+                          </div>
+                      `;
+                  }
+              }
 
-                containerSeksi.innerHTML = "";
-                listSeksi.forEach(s => {
-                    const namaKoordinator = (d.data_seksi && d.data_seksi[s.id]) ? d.data_seksi[s.id] : "Belum Diisi";
-                    containerSeksi.innerHTML += `
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                            <p class="text-[11px] font-semibold text-blue-600">${s.nama}</p>
-                            <p class="font-bold text-slate-800 text-xs mt-0.5">${namaKoordinator}</p>
-                        </div>
-                    `;
-                });
-            }
-        }
-    }, err => console.error("Error Profil:", err));
+              // E. Render 11 Seksi
+              const containerSeksi = document.getElementById("container-seksi-warga") || document.getElementById("view-container-seksi");
+              if (containerSeksi) {
+                  const listSeksi = [
+                      { id: "keamanan", nama: "Seksi Keamanan" },
+                      { id: "pertamanan", nama: "Seksi Pertamanan" },
+                      { id: "hari_besar", nama: "Seksi Hari Besar" },
+                      { id: "sosial", nama: "Seksi Sosial Warga" },
+                      { id: "pkk", nama: "Seksi PKK" },
+                      { id: "olahraga", nama: "Seksi Olahraga" },
+                      { id: "hukum", nama: "Seksi Hukum" },
+                      { id: "ekonomi", nama: "Seksi Ekonomi" },
+                      { id: "kesehatan", nama: "Seksi Kesehatan" },
+                      { id: "sampah", nama: "Seksi Sampah" },
+                      { id: "komunikasi", nama: "Seksi Komunikasi" }
+                  ];
 
-    // 2. LISTEN LAPORAN KEGIATAN
-    db.collection("kegiatan").onSnapshot(snapshot => {
-        const containerKegiatan = document.getElementById("view-container-kegiatan") || document.getElementById("container-kegiatan");
-        if (!containerKegiatan) return;
+                  containerSeksi.innerHTML = "";
+                  listSeksi.forEach(s => {
+                      const namaKoordinator = (d.data_seksi && d.data_seksi[s.id]) ? d.data_seksi[s.id] : "Belum Diisi";
+                      containerSeksi.innerHTML += `
+                          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                              <p class="text-[11px] font-semibold text-blue-600">${s.nama}</p>
+                              <p class="font-bold text-slate-800 text-xs mt-0.5">${namaKoordinator}</p>
+                          </div>
+                      `;
+                  });
+              }
+          }
+      }, err => console.error("Error Profil:", err));
 
-        containerKegiatan.innerHTML = "";
-        if (snapshot.empty) {
-            containerKegiatan.innerHTML = `<p class="text-slate-500 text-sm col-span-full text-center py-4">Belum ada laporan kegiatan.</p>`;
-            return;
-        }
+      // 2. LISTEN LAPORAN KEGIATAN
+      db.collection("kegiatan").onSnapshot(snapshot => {
+          const containerKegiatan = document.getElementById("view-container-kegiatan") || document.getElementById("container-kegiatan");
+          if (!containerKegiatan) return;
 
-        const docs = [];
-        snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-        docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
+          containerKegiatan.innerHTML = "";
+          if (snapshot.empty) {
+              containerKegiatan.innerHTML = `<p class="text-slate-500 text-sm col-span-full text-center py-4">Belum ada laporan kegiatan.</p>`;
+              return;
+          }
 
-        docs.forEach(data => {
-            const fotoHtml = data.foto 
-                ? `<img src="${data.foto}" class="w-full h-40 object-cover rounded-xl mb-3" onerror="this.style.display='none'">` 
-                : '';
+          const docs = [];
+          snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+          docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
 
-            containerKegiatan.innerHTML += `
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                    <div>
-                        ${fotoHtml}
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${data.seksi || 'Seksi RW'}</span>
-                            <span class="text-xs text-slate-400">${data.tanggal || ''}</span>
-                        </div>
-                        <h4 class="font-bold text-slate-800 text-base mb-1">${data.judul || ''}</h4>
-                        <p class="text-slate-600 text-xs whitespace-pre-line">${data.rincian || data.deskripsi || ''}</p>
-                    </div>
-                </div>
-            `;
-        });
-    }, err => console.error("Error Kegiatan:", err));
+          docs.forEach(data => {
+              const fotoHtml = data.foto 
+                  ? `<img src="${data.foto}" class="w-full h-40 object-cover rounded-xl mb-3" onerror="this.style.display='none'">` 
+                  : '';
 
-    // 3. LISTEN LAPORAN KAS / KEUANGAN
-    db.collection("kas").onSnapshot(snapshot => {
-        let totalDebit = 0;
-        let totalKredit = 0;
+              containerKegiatan.innerHTML += `
+                  <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                      <div>
+                          ${fotoHtml}
+                          <div class="flex justify-between items-center mb-1">
+                              <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${data.seksi || 'Seksi RW'}</span>
+                              <span class="text-xs text-slate-400">${data.tanggal || ''}</span>
+                          </div>
+                          <h4 class="font-bold text-slate-800 text-base mb-1">${data.judul || ''}</h4>
+                          <p class="text-slate-600 text-xs whitespace-pre-line">${data.rincian || data.deskripsi || ''}</p>
+                      </div>
+                  </div>
+              `;
+          });
+      }, err => console.error("Error Kegiatan:", err));
 
-        const containerKas = document.getElementById("view-tabel-kas") || document.getElementById("tabel-kas-index");
-        if (containerKas) containerKas.innerHTML = "";
+      // 3. LISTEN LAPORAN KAS / KEUANGAN
+      db.collection("kas").onSnapshot(snapshot => {
+          let totalDebit = 0;
+          let totalKredit = 0;
 
-        const docs = [];
-        snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-        docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
+          const containerKas = document.getElementById("view-tabel-kas") || document.getElementById("tabel-kas-index");
+          if (containerKas) containerKas.innerHTML = "";
 
-        docs.forEach(data => {
-            const nominal = Number(data.jumlah) || 0;
-            const jenis = String(data.jenis || '').toLowerCase();
-            const isDebit = (jenis === 'debit' || jenis === 'masuk' || jenis === 'pemasukan');
+          const docs = [];
+          snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+          docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
 
-            if (isDebit) {
-                totalDebit += nominal;
-            } else {
-                totalKredit += nominal;
-            }
+          docs.forEach(data => {
+              const nominal = Number(data.jumlah) || 0;
+              const jenis = String(data.jenis || '').toLowerCase();
+              const isDebit = (jenis === 'debit' || jenis === 'masuk' || jenis === 'pemasukan');
 
-            if (containerKas) {
-                containerKas.innerHTML += `
-                    <tr class="border-b text-xs">
-                        <td class="p-2.5">${data.tanggal || '-'}</td>
-                        <td class="p-2.5 font-medium text-slate-800">${data.keterangan || '-'}</td>
-                        <td class="p-2.5 ${isDebit ? 'text-green-600 font-bold' : 'text-slate-400'}">${isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
-                        <td class="p-2.5 ${!isDebit ? 'text-red-600 font-bold' : 'text-slate-400'}">${!isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
-                    </tr>
-                `;
-            }
-        });
+              if (isDebit) {
+                  totalDebit += nominal;
+              } else {
+                  totalKredit += nominal;
+              }
 
-        // Hitung Saldo Akhir
-        const saldoAkhir = totalDebit - totalKredit;
+              if (containerKas) {
+                  containerKas.innerHTML += `
+                      <tr class="border-b text-xs">
+                          <td class="p-2.5">${data.tanggal || '-'}</td>
+                          <td class="p-2.5 font-medium text-slate-800">${data.keterangan || '-'}</td>
+                          <td class="p-2.5 ${isDebit ? 'text-green-600 font-bold' : 'text-slate-400'}">${isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
+                          <td class="p-2.5 ${!isDebit ? 'text-red-600 font-bold' : 'text-slate-400'}">${!isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
+                      </tr>
+                  `;
+              }
+          });
 
-        // Tampilkan Angka Total Ke HTML Ringkasan Kas (Jika Elemennya Ada)
-        const elMasuk = document.getElementById("kas-total-masuk");
-        const elKeluar = document.getElementById("kas-total-keluar");
-        const elSaldo = document.getElementById("kas-saldo-akhir");
+          // Hitung Saldo
+          const saldoAkhir = totalDebit - totalKredit;
 
-        if (elMasuk) elMasuk.innerText = "Rp " + totalDebit.toLocaleString('id-ID');
-        if (elKeluar) elKeluar.innerText = "Rp " + totalKredit.toLocaleString('id-ID');
-        if (elSaldo) elSaldo.innerText = "Rp " + saldoAkhir.toLocaleString('id-ID');
-    }, err => console.error("Error Kas:", err));
+          // Tampilkan Total
+          const elMasuk = document.getElementById("kas-total-masuk");
+          const elKeluar = document.getElementById("kas-total-keluar");
+          const elSaldo = document.getElementById("kas-saldo-akhir");
 
-    // 4. KIRIM ADUAN WARGA
-    function kirimAduan(e) {
-        e.preventDefault();
-        const nama = document.getElementById("aduan-nama").value;
-        const rt = document.getElementById("aduan-rt").value;
-        const pesan = document.getElementById("aduan-pesan").value;
+          if (elMasuk) elMasuk.innerText = "Rp " + totalDebit.toLocaleString('id-ID');
+          if (elKeluar) elKeluar.innerText = "Rp " + totalKredit.toLocaleString('id-ID');
+          if (elSaldo) elSaldo.innerText = "Rp " + saldoAkhir.toLocaleString('id-ID');
+      }, err => console.error("Error Kas:", err));
 
-        db.collection("aduan").add({
-            nama: nama,
-            rt: rt,
-            pesan: pesan,
-            created_at: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-            alert("Terima kasih, aduan/masukan Anda telah terkirim!");
-            e.target.reset();
-        }).catch(err => alert("Gagal mengirim: " + err.message));
-    }
-</script>
+      // 4. KIRIM ADUAN WARGA
+      function kirimAduan(e) {
+          e.preventDefault();
+          const nama = document.getElementById("aduan-nama").value;
+          const rt = document.getElementById("aduan-rt").value;
+          const pesan = document.getElementById("aduan-pesan").value;
+
+          db.collection("aduan").add({
+              nama: nama,
+              rt: rt,
+              pesan: pesan,
+              created_at: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(() => {
+              alert("Terima kasih, aduan/masukan Anda telah terkirim!");
+              e.target.reset();
+          }).catch(err => alert("Gagal mengirim: " + err.message));
+      }
+    </script>
 </body>
 </html>

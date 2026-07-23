@@ -266,16 +266,21 @@
       db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
           if (doc.exists) {
               const d = doc.data();
+              let edisiVal = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || d.periode;
+              
+              if (!edisiVal) {
+                  for (let key in d) {
+                      if (key.toLowerCase().includes("mading") || key.toLowerCase().includes("edisi")) {
+                          edisiVal = d[key];
+                          break;
+                      }
+                  }
+              }
 
-              // Update Edisi Mading ke berbagai variasi ID
-              const edisiVal = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || d.periode;
-              ['view-edisi-mading', 'edisi-mading', 'view-edisi', 'mading-edisi'].forEach(id => {
-                  const el = document.getElementById(id);
-                  if (el) el.innerText = edisiVal || "Edisi Mading RW Mekarindah";
-              });
+              const elEdisi = document.getElementById("view-edisi-mading");
+              if (elEdisi) elEdisi.innerText = edisiVal || "Edisi Mading RW Mekarindah";
 
-              // Update Sambutan / Informasi Resmi
-              if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Kata Pengantar";
+              if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
               if (document.getElementById("view-sambutan-isi")) document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "";
 
               const defaultFoto = "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Pengurus";
@@ -289,7 +294,6 @@
               if (document.getElementById("view-bendahara")) document.getElementById("view-bendahara").innerText = d.bendahara || "-";
               if (document.getElementById("view-foto-bendahara")) document.getElementById("view-foto-bendahara").src = d.foto_bendahara || defaultFoto;
 
-              // Render RT
               const containerRT = document.getElementById("container-rt-warga") || document.getElementById("view-container-rt");
               if (containerRT) {
                   containerRT.innerHTML = "";
@@ -314,7 +318,6 @@
                   }
               }
 
-              // Render Seksi
               const containerSeksi = document.getElementById("container-seksi-warga") || document.getElementById("view-container-seksi");
               if (containerSeksi) {
                   const listSeksi = [
@@ -344,36 +347,6 @@
               }
           }
       }, err => console.error("Error Profil:", err));
-
-      // Listen Pengumuman / Informasi Resmi Mading
-      db.collection("pengumuman").onSnapshot(snapshot => {
-          const containerPengumuman = document.getElementById("container-pengumuman") || document.getElementById("view-pengumuman") || document.getElementById("mading-pengumuman");
-          if (!containerPengumuman) return;
-
-          containerPengumuman.innerHTML = "";
-          if (snapshot.empty) {
-              containerPengumuman.innerHTML = `<p class="text-xs text-slate-400 italic">Belum ada pengumuman resmi.</p>`;
-              return;
-          }
-
-          snapshot.forEach(doc => {
-              const p = doc.data();
-              const judul = p.judul || p.title || "Pengumuman";
-              const isi = p.isi || p.keterangan || p.deskripsi || "";
-              const tanggal = p.tanggal || p.tgl || "-";
-
-              containerPengumuman.innerHTML += `
-                  <div class="bg-blue-50/50 p-3.5 rounded-xl border border-blue-100 mb-3">
-                      <div class="flex items-center justify-between mb-1">
-                          <span class="text-[10px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">Resmi</span>
-                          <span class="text-[10px] text-slate-400">${tanggal}</span>
-                      </div>
-                      <h4 class="font-bold text-slate-800 text-xs mb-1">${judul}</h4>
-                      <p class="text-slate-600 text-[11px] leading-relaxed">${isi}</p>
-                  </div>
-              `;
-          });
-      }, err => console.error("Error Pengumuman:", err));
 
       // 2. LISTEN LAPORAN KAS / KEUANGAN
       db.collection("kas").onSnapshot(snapshot => {
@@ -420,6 +393,67 @@
           if (document.getElementById("kas-saldo-akhir")) document.getElementById("kas-saldo-akhir").innerText = fmtSaldo;
           if (document.getElementById("view-saldo-kas")) document.getElementById("view-saldo-kas").innerText = fmtSaldo;
       }, err => console.error("Error Kas:", err));
+	  
+	  // Render data Mading (5 Data)
+      db.collection("mading").onSnapshot(snapshot => {
+          const containerMading = document.getElementById("container-pengumuman") || 
+                                  document.getElementById("view-pengumuman") || 
+                                  document.getElementById("mading-pengumuman") || 
+                                  document.getElementById("pengumuman-list");
+          
+          if (!containerMading) return;
+
+          if (!snapshot.empty) {
+              containerMading.innerHTML = "";
+              snapshot.forEach(doc => {
+                  const p = doc.data();
+                  const judul = p.judul || p.title || p.nama_mading || "Informasi Mading";
+                  const isi = p.isi || p.deskripsi || p.keterangan || p.pesan || "";
+                  const tanggal = p.tanggal || p.tgl || "-";
+
+                  containerMading.innerHTML += `
+                      <div class="bg-blue-50/60 p-3.5 rounded-xl border border-blue-100 mb-3 shadow-sm">
+                          <div class="flex items-center justify-between mb-1">
+                              <span class="text-[10px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">Mading</span>
+                              <span class="text-[10px] text-slate-400">${tanggal}</span>
+                          </div>
+                          <h4 class="font-bold text-slate-800 text-xs mb-1">${judul}</h4>
+                          <p class="text-slate-600 text-[11px] leading-relaxed">${isi}</p>
+                      </div>
+                  `;
+              });
+          }
+      }, err => console.error("Error Mading:", err));
+
+      // Render data Kegiatan (2 Data)
+      db.collection("kegiatan").onSnapshot(snapshot => {
+          const containerKegiatan = document.getElementById("container-kegiatan") || 
+                                    document.getElementById("view-kegiatan") || 
+                                    document.getElementById("kegiatan-list");
+          
+          if (!containerKegiatan) return;
+
+          if (!snapshot.empty) {
+              containerKegiatan.innerHTML = "";
+              snapshot.forEach(doc => {
+                  const k = doc.data();
+                  const nama = k.nama_kegiatan || k.judul || k.nama || "Kegiatan Warga";
+                  const ket = k.keterangan || k.deskripsi || k.isi || "";
+                  const tgl = k.tanggal || k.tgl || "-";
+
+                  containerKegiatan.innerHTML += `
+                      <div class="bg-emerald-50/60 p-3.5 rounded-xl border border-emerald-100 mb-3 shadow-sm">
+                          <div class="flex items-center justify-between mb-1">
+                              <span class="text-[10px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">Kegiatan</span>
+                              <span class="text-[10px] text-slate-400">${tgl}</span>
+                          </div>
+                          <h4 class="font-bold text-slate-800 text-xs mb-1">${nama}</h4>
+                          <p class="text-slate-600 text-[11px] leading-relaxed">${ket}</p>
+                      </div>
+                  `;
+              });
+          }
+      }, err => console.error("Error Kegiatan:", err));
     </script>
 </body>
 </html>

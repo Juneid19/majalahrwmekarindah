@@ -235,31 +235,47 @@
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-   // 1. LISTEN DATA PROFIL & EDISI MADING
+   // Fungsi pembantu untuk mengupdate elemen berdasarkan beberapa kemungkinan ID
+function updateElemen(idList, text) {
+    idList.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = text;
+    });
+}
+
+// 1. LISTEN DATA PROFIL & EDISI MADING
 db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
     if (doc.exists) {
         const d = doc.data();
-        console.log("🔍 Data Profil/Settings dari Firestore:", d); // Cek isi field di F12 Console
 
-        // Render Edisi Mading (Cek semua kemungkinan kunci)
-        const elemEdisi = document.getElementById("view-edisi-mading") || document.getElementById("view-mading-edisi");
-        if (elemEdisi) {
-            const edisiText = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || d.periode || d.bulan || "Edisi Mading RW Mekarindah";
-            elemEdisi.innerText = edisiText;
+        // Deteksi Otomatis Field Edisi Mading dari Firestore
+        let edisiText = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || d.periode || d.bulan || d.edisiMading;
+        
+        if (!edisiText) {
+            for (let key in d) {
+                if ((key.toLowerCase().includes("edisi") || key.toLowerCase().includes("mading") || key.toLowerCase().includes("periode")) && typeof d[key] === "string" && d[key].trim() !== "") {
+                    edisiText = d[key];
+                    break;
+                }
+            }
         }
+        if (!edisiText) edisiText = "Edisi Mading RW Mekarindah";
+
+        // Render Edisi Mading ke semua kemungkinan ID
+        updateElemen(["view-edisi-mading", "view-mading-edisi", "edisi-mading", "mading-edisi", "view-edisi"], edisiText);
 
         // Sambutan Ketua RW
-        if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
-        if (document.getElementById("view-sambutan-isi")) document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "";
+        updateElemen(["view-sambutan-judul"], d.sambutan_judul || "Sambutan Ketua RW");
+        updateElemen(["view-sambutan-isi"], d.sambutan_isi || "");
 
         // Pengurus Inti
         const defaultFoto = "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Pengurus";
         if (document.getElementById("view-foto-rw")) document.getElementById("view-foto-rw").src = d.foto_rw || defaultFoto;
         if (document.getElementById("view-foto-rw-2")) document.getElementById("view-foto-rw-2").src = d.foto_rw || defaultFoto;
-        if (document.getElementById("view-ketua-rw")) document.getElementById("view-ketua-rw").innerText = d.ketua || "-";
-        if (document.getElementById("view-sekretaris")) document.getElementById("view-sekretaris").innerText = d.sekretaris || "-";
+        updateElemen(["view-ketua-rw"], d.ketua || "-");
+        updateElemen(["view-sekretaris"], d.sekretaris || "-");
         if (document.getElementById("view-foto-sekretaris")) document.getElementById("view-foto-sekretaris").src = d.foto_sekretaris || defaultFoto;
-        if (document.getElementById("view-bendahara")) document.getElementById("view-bendahara").innerText = d.bendahara || "-";
+        updateElemen(["view-bendahara"], d.bendahara || "-");
         if (document.getElementById("view-foto-bendahara")) document.getElementById("view-foto-bendahara").src = d.foto_bendahara || defaultFoto;
 
         // Render Kartu RT
@@ -352,7 +368,7 @@ db.collection("kegiatan").onSnapshot(snapshot => {
     });
 });
 
-// 3. LISTEN LAPORAN KAS / KEUANGAN
+// 3. LISTEN LAPORAN KAS / KEUANGAN (DISESUAIKAN DENGAN STRUKTUR FIRESTORE)
 db.collection("kas").onSnapshot(snapshot => {
     const containerKas = document.getElementById("view-tabel-kas") || document.getElementById("tabel-kas-index");
     let totalDebit = 0;
@@ -360,28 +376,15 @@ db.collection("kas").onSnapshot(snapshot => {
 
     if (containerKas) containerKas.innerHTML = "";
 
-    snapshot.forEach(doc => {
-        const data = doc.data();
-        console.log("💰 Data Item Kas dari Firestore:", data); // Cek struktur item kas di F12 Console
+    const docs = [];
+    snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+    docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
 
-        // Ambil nominal (Cek jumlah, debit, kredit, nominal)
-        let nominal = 0;
-        let isDebit = false;
-
-        // Skema 1: Jika tersimpan di field 'debit' dan 'kredit' terpisah
-        if (data.debit !== undefined || data.kredit !== undefined) {
-            const deb = parseFloat(String(data.debit || 0).replace(/[^0-9.-]/g, '')) || 0;
-            const kre = parseFloat(String(data.kredit || 0).replace(/[^0-9.-]/g, '')) || 0;
-            if (deb > 0) { nominal = deb; isDebit = true; }
-            else if (kre > 0) { nominal = kre; isDebit = false; }
-        } else {
-            // Skema 2: Jika tersimpan di 'jumlah' atau 'nominal' + field 'jenis'/'tipe'
-            const val = data.jumlah || data.nominal || 0;
-            nominal = parseFloat(String(val).replace(/[^0-9.-]/g, '')) || 0;
-            
-            const jenis = String(data.jenis || data.kategori || data.tipe || '').toLowerCase();
-            isDebit = (jenis === 'debit' || jenis === 'masuk' || jenis === 'pemasukan');
-        }
+    docs.forEach(data => {
+        // Ambil nominal angka murni
+        const nominal = Number(data.jumlah) || 0;
+        const jenis = String(data.jenis || '').toLowerCase();
+        const isDebit = (jenis === 'debit' || jenis === 'masuk' || jenis === 'pemasukan');
 
         if (isDebit) {
             totalDebit += nominal;
@@ -393,7 +396,7 @@ db.collection("kas").onSnapshot(snapshot => {
             containerKas.innerHTML += `
                 <tr class="border-b text-xs">
                     <td class="p-2.5">${data.tanggal || '-'}</td>
-                    <td class="p-2.5 font-medium text-slate-800">${data.keterangan || data.uraian || data.deskripsi || '-'}</td>
+                    <td class="p-2.5 font-medium text-slate-800">${data.keterangan || '-'}</td>
                     <td class="p-2.5 ${isDebit ? 'text-green-600 font-bold' : 'text-slate-400'}">${isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
                     <td class="p-2.5 ${!isDebit ? 'text-red-600 font-bold' : 'text-slate-400'}">${!isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
                 </tr>
@@ -401,12 +404,13 @@ db.collection("kas").onSnapshot(snapshot => {
         }
     });
 
+    // Saldo Akhir = 5.000.000 - 1.200.000 = 3.800.000
     const saldoAkhir = totalDebit - totalKredit;
 
-    // Update Tampilan Total
-    if (document.getElementById("kas-total-masuk")) document.getElementById("kas-total-masuk").innerText = "Rp " + totalDebit.toLocaleString('id-ID');
-    if (document.getElementById("kas-total-keluar")) document.getElementById("kas-total-keluar").innerText = "Rp " + totalKredit.toLocaleString('id-ID');
-    if (document.getElementById("kas-saldo-akhir")) document.getElementById("kas-saldo-akhir").innerText = "Rp " + saldoAkhir.toLocaleString('id-ID');
+    // Update Totals Ke Semua Kemungkinan ID di HTML
+    updateElemen(["kas-total-masuk", "view-kas-masuk", "view-total-masuk", "total-masuk", "kas-masuk"], "Rp " + totalDebit.toLocaleString('id-ID'));
+    updateElemen(["kas-total-keluar", "view-kas-keluar", "view-total-keluar", "total-keluar", "kas-keluar"], "Rp " + totalKredit.toLocaleString('id-ID'));
+    updateElemen(["kas-saldo-akhir", "view-kas-saldo", "view-saldo-akhir", "saldo-akhir", "kas-saldo", "view-saldo"], "Rp " + saldoAkhir.toLocaleString('id-ID'));
 });
 	
     // 4. KIRIM ADUAN

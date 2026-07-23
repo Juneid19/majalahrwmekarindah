@@ -4,24 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - RW Mekarindah</title>
-    
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Firebase SDK (v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
-    <style>
-        .hidden { display: none !important; }
-    </style>
+    <style>.hidden { display: none !important; }</style>
 </head>
 <body class="bg-slate-100 font-sans text-slate-800 min-h-screen">
 
-    <!-- ============================================================ -->
-    <!-- 1. HALAMAN LOGIN                                             -->
-    <!-- ============================================================ -->
+    <!-- LOGIN SCREEN -->
     <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-200">
             <div class="text-center mb-6">
@@ -30,84 +21,55 @@
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-slate-700">Email Admin</label>
-                    <input type="email" id="login-email" required placeholder="admin@domain.com"
-                        class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-sm font-medium mb-1">Email Admin</label>
+                    <input type="email" id="login-email" required placeholder="admin@domain.com" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-slate-700">Password</label>
-                    <input type="password" id="login-password" required placeholder="••••••••"
-                        class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-sm font-medium mb-1">Password</label>
+                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <button type="submit"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-md">
-                    Masuk ke Dashboard
-                </button>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition">Masuk ke Dashboard</button>
             </form>
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- 2. MAIN DASHBOARD ADMIN                                       -->
-    <!-- ============================================================ -->
+    <!-- MAIN DASHBOARD -->
     <div id="main-dashboard" class="hidden">
-        
-        <!-- Header / Navbar -->
         <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
                 <div class="flex items-center space-x-3">
                     <div class="bg-blue-600 text-white font-bold p-2 rounded-lg">ADM</div>
                     <h1 class="text-xl font-bold text-slate-800">Panel Kontrol RW Mekarindah</h1>
                 </div>
-                <button onclick="handleLogout()"
-                    class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-xl text-sm font-semibold transition border border-red-200">
-                    Keluar / Logout
-                </button>
+                <button onclick="handleLogout()" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-sm font-semibold border border-red-200 hover:bg-red-100 transition">Keluar / Logout</button>
             </div>
         </header>
 
-        <!-- Container Konten -->
         <main class="max-w-7xl mx-auto p-4 md:p-6">
-            
-            <!-- Tab Navigation -->
+            <!-- Navigation Tabs -->
             <div class="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
-                <button onclick="switchTab('mading')" id="tab-mading" class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition bg-blue-600 text-white">
-                    📢 Cover & Mading
-                </button>
-                <button onclick="switchTab('profil')" id="tab-profil" class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-100">
-                    ⚙️ Sambutan & Profil
-                </button>
-                <button onclick="switchTab('kegiatan')" id="tab-kegiatan" class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-100">
-                    📅 Laporan Kegiatan
-                </button>
-                <button onclick="switchTab('kas')" id="tab-kas" class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-100">
-                    💰 Laporan Kas
-                </button>
-                <button onclick="switchTab('aduan')" id="tab-aduan" class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-100">
-                    📩 Aduan Warga
-                </button>
+                <button onclick="switchTab('mading')" id="tab-mading" class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition bg-blue-600 text-white">📢 Cover & Mading</button>
+                <button onclick="switchTab('profil')" id="tab-profil" class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-100">⚙️ Profil Pengurus & RT</button>
+                <button onclick="switchTab('kegiatan')" id="tab-kegiatan" class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-100">📅 Laporan Kegiatan</button>
+                <button onclick="switchTab('kas')" id="tab-kas" class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-100">💰 Laporan Kas</button>
+                <button onclick="switchTab('aduan')" id="tab-aduan" class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition text-slate-600 hover:bg-slate-100">📩 Aduan Warga</button>
             </div>
 
-            <!-- TAB 1: COVER & MADING DIGITAL -->
+            <!-- TAB 1: MADING -->
             <section id="section-mading" class="tab-content space-y-6">
-                <!-- Form Setting Edisi Mading Cover -->
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-bold mb-4 text-slate-800">Atur Edisi Mading (Tampil di Cover Utama)</h2>
+                    <h2 class="text-lg font-bold mb-4">Atur Edisi Mading Cover Utama</h2>
                     <form onsubmit="simpanEdisiMading(event)" class="flex gap-4 items-end">
                         <div class="flex-1">
-                            <label class="block text-sm font-medium mb-1">Judul / Periode Edisi Bulanan</label>
-                            <input type="text" id="mading-edisi" required placeholder="Contoh: Edisi Juli 2026 - Mekarindah Bersatu"
-                                class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <label class="block text-sm font-medium mb-1">Judul / Periode Edisi</label>
+                            <input type="text" id="mading-edisi" required placeholder="Contoh: Edisi Juli 2026 - Mekarindah Bersatu" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
-                        <button type="submit" class="bg-slate-800 text-white px-6 py-2 rounded-xl font-medium hover:bg-slate-900 transition">
-                            Update Edisi
-                        </button>
+                        <button type="submit" class="bg-slate-800 text-white px-6 py-2 rounded-xl font-medium hover:bg-slate-900">Update Edisi</button>
                     </form>
                 </div>
 
-                <!-- Form Tambah Pengumuman Mading -->
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-bold mb-4 text-slate-800">Tambah Pengumuman Mading Baru</h2>
+                    <h2 class="text-lg font-bold mb-4">Tambah Pengumuman Mading Baru</h2>
                     <form onsubmit="tambahMading(event)" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -127,96 +89,102 @@
                             <label class="block text-sm font-medium mb-1">Isi Pengumuman</label>
                             <textarea id="mading-isi" rows="3" required class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                         </div>
-                        <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-blue-700 transition">
-                            Terbitkan Pengumuman
-                        </button>
+                        <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-blue-700">Terbitkan Pengumuman</button>
                     </form>
                 </div>
 
-                <!-- Tabel Data Mading -->
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-bold mb-4 text-slate-800">Daftar Mading Aktif</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b text-sm text-slate-500">
-                                    <th class="p-3">Tanggal</th>
-                                    <th class="p-3">Judul</th>
-                                    <th class="p-3">Kategori</th>
-                                    <th class="p-3">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-mading" class="divide-y text-sm">
-                                <!-- Data dimuat via JS -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <h2 class="text-lg font-bold mb-4">Daftar Mading Aktif</h2>
+                    <table class="w-full text-left border-collapse">
+                        <thead><tr class="border-b text-sm text-slate-500"><th class="p-3">Tanggal</th><th class="p-3">Judul</th><th class="p-3">Kategori</th><th class="p-3">Aksi</th></tr></thead>
+                        <tbody id="tabel-mading" class="divide-y text-sm"></tbody>
+                    </table>
                 </div>
             </section>
 
-            <!-- TAB 2: SAMBUTAN & PROFIL STRUKTUR -->
+            <!-- TAB 2: PROFIL PENGURUS & DATA RT -->
             <section id="section-profil" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-bold mb-4 text-slate-800">Atur Sambutan, Pengurus, & Demografi</h2>
-                    <form onsubmit="simpanProfilDemografi(event)" class="space-y-6">
+                    <h2 class="text-lg font-bold mb-6 text-slate-800">Atur Sambutan, Pengurus Inti & Data RT</h2>
+                    <form onsubmit="simpanProfilLengkap(event)" class="space-y-8">
                         
-                        <!-- Sambutan Ketua RW -->
+                        <!-- Sambutan RW -->
                         <div class="space-y-4">
-                            <h3 class="font-semibold text-slate-700 border-b pb-2">Sambutan Ketua RW</h3>
+                            <h3 class="font-bold text-blue-600 border-b pb-2">1. Sambutan Ketua RW</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium mb-1">Judul Sambutan</label>
                                     <input type="text" id="profil-sambutan-judul" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium mb-1">URL Foto Ketua RW (atau ketik rw.jpg)</label>
-                                    <input type="text" id="profil-foto-rw" placeholder="rw.jpg" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                    <label class="block text-sm font-medium mb-1">URL Foto Ketua RW</label>
+                                    <input type="text" id="profil-foto-rw" placeholder="https://..." class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium mb-1">Isi Sambutan Ketua RW</label>
-                                <textarea id="profil-sambutan-isi" rows="4" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                <label class="block text-sm font-medium mb-1">Isi Sambutan</label>
+                                <textarea id="profil-sambutan-isi" rows="3" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                             </div>
                         </div>
 
-                        <!-- Susunan Pengurus -->
+                        <!-- Pengurus Inti (Nama & Foto) -->
                         <div class="space-y-4">
-                            <h3 class="font-semibold text-slate-700 border-b pb-2">Struktur Pengurus Inti</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">Nama Ketua RW</label>
-                                    <input type="text" id="pengurus-ketua" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <h3 class="font-bold text-blue-600 border-b pb-2">2. Pengurus Inti (Nama & Foto)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <!-- Ketua -->
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                                    <p class="font-semibold text-sm text-slate-700">Ketua RW</p>
+                                    <div>
+                                        <label class="block text-xs font-medium mb-1">Nama</label>
+                                        <input type="text" id="pengurus-ketua" class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">Nama Sekretaris</label>
-                                    <input type="text" id="pengurus-sekretaris" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                <!-- Sekretaris -->
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                                    <p class="font-semibold text-sm text-slate-700">Sekretaris RW</p>
+                                    <div>
+                                        <label class="block text-xs font-medium mb-1">Nama Sekretaris</label>
+                                        <input type="text" id="pengurus-sekretaris" class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium mb-1">URL Foto Sekretaris</label>
+                                        <input type="text" id="pengurus-foto-sekretaris" placeholder="https://..." class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">Nama Bendahara</label>
-                                    <input type="text" id="pengurus-bendahara" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                <!-- Bendahara -->
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                                    <p class="font-semibold text-sm text-slate-700">Bendahara RW</p>
+                                    <div>
+                                        <label class="block text-xs font-medium mb-1">Nama Bendahara</label>
+                                        <input type="text" id="pengurus-bendahara" class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium mb-1">URL Foto Bendahara</label>
+                                        <input type="text" id="pengurus-foto-bendahara" placeholder="https://..." class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Data Demografi -->
+                        <!-- Data RT (RT 01 s/d RT 06) -->
                         <div class="space-y-4">
-                            <h3 class="font-semibold text-slate-700 border-b pb-2">Data Demografi Warga (Jumlah KK per RT)</h3>
-                            <div id="container-demografi-rt" class="grid grid-cols-2 md:grid-cols-6 gap-3">
-                                <!-- Dipasang via JS loop RT 01-06 -->
+                            <h3 class="font-bold text-blue-600 border-b pb-2">3. Data Ketua & Jumlah KK per RT (RT 01 - RT 06)</h3>
+                            <div id="container-rt-fields" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <!-- Dipasang via JS -->
                             </div>
                         </div>
 
-                        <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-blue-700 transition">
-                            Simpan Perubahan Profil & Pengurus
+                        <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 shadow-md transition">
+                            💾 Simpan Semua Data Profil & RT
                         </button>
                     </form>
                 </div>
             </section>
 
-            <!-- TAB 3: LAPORAN KEGIATAN -->
+            <!-- TAB 3: KEGIATAN -->
             <section id="section-kegiatan" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-bold mb-4 text-slate-800">Tambah Laporan Kegiatan Koordinator</h2>
+                    <h2 class="text-lg font-bold mb-4">Tambah Laporan Kegiatan</h2>
                     <form onsubmit="tambahKegiatan(event)" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
@@ -225,7 +193,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium mb-1">Koordinator / Penanggung Jawab</label>
-                                <input type="text" id="kegiatan-penanggungjawab" required placeholder="Seksi Pemuda / Keamanan dll" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="text" id="kegiatan-penanggungjawab" required class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium mb-1">Tanggal</label>
@@ -233,43 +201,29 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">URL Foto Kegiatan (Opsional)</label>
-                            <input type="text" id="kegiatan-foto" placeholder="https://... atau nama_foto.jpg" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <label class="block text-sm font-medium mb-1">URL Foto Kegiatan</label>
+                            <input type="text" id="kegiatan-foto" placeholder="https://..." class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Rincian Laporan Kegiatan</label>
+                            <label class="block text-sm font-medium mb-1">Rincian Laporan</label>
                             <textarea id="kegiatan-rincian" rows="3" required class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                         </div>
-                        <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-blue-700 transition">
-                            Simpan Laporan Kegiatan
-                        </button>
+                        <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-blue-700">Simpan Laporan Kegiatan</button>
                     </form>
                 </div>
-
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-bold mb-4 text-slate-800">Daftar Kegiatan</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b text-sm text-slate-500">
-                                    <th class="p-3">Tanggal</th>
-                                    <th class="p-3">Judul</th>
-                                    <th class="p-3">Koordinator</th>
-                                    <th class="p-3">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-kegiatan" class="divide-y text-sm">
-                                <!-- Data dimuat via JS -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <h2 class="text-lg font-bold mb-4">Daftar Kegiatan</h2>
+                    <table class="w-full text-left border-collapse">
+                        <thead><tr class="border-b text-sm text-slate-500"><th class="p-3">Tanggal</th><th class="p-3">Judul</th><th class="p-3">Koordinator</th><th class="p-3">Aksi</th></tr></thead>
+                        <tbody id="tabel-kegiatan" class="divide-y text-sm"></tbody>
+                    </table>
                 </div>
             </section>
 
-            <!-- TAB 4: LAPORAN KAS KEUANGAN -->
+            <!-- TAB 4: KAS -->
             <section id="section-kas" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-bold mb-4 text-slate-800">Catat Transaksi Kas Warga</h2>
+                    <h2 class="text-lg font-bold mb-4">Catat Transaksi Kas Warga</h2>
                     <form onsubmit="tambahKas(event)" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
@@ -285,71 +239,40 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium mb-1">Jumlah (Rp)</label>
-                                <input type="number" id="kas-jumlah" required min="0" placeholder="100000" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="number" id="kas-jumlah" required min="0" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Keterangan Transaksi</label>
-                            <input type="text" id="kas-keterangan" required placeholder="Contoh: Iuran bulanan warga RT 01" class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="text" id="kas-keterangan" required class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
-                        <button type="submit" class="bg-green-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-green-700 transition">
-                            Simpan Transaksi Kas
-                        </button>
+                        <button type="submit" class="bg-green-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-green-700">Simpan Transaksi Kas</button>
                     </form>
                 </div>
-
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-bold mb-4 text-slate-800">Riwayat Kas</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b text-sm text-slate-500">
-                                    <th class="p-3">Tanggal</th>
-                                    <th class="p-3">Keterangan</th>
-                                    <th class="p-3">Debit</th>
-                                    <th class="p-3">Kredit</th>
-                                    <th class="p-3">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-kas" class="divide-y text-sm">
-                                <!-- Data dimuat via JS -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <h2 class="text-lg font-bold mb-4">Riwayat Kas</h2>
+                    <table class="w-full text-left border-collapse">
+                        <thead><tr class="border-b text-sm text-slate-500"><th class="p-3">Tanggal</th><th class="p-3">Keterangan</th><th class="p-3">Debit</th><th class="p-3">Kredit</th><th class="p-3">Aksi</th></tr></thead>
+                        <tbody id="tabel-kas" class="divide-y text-sm"></tbody>
+                    </table>
                 </div>
             </section>
 
-            <!-- TAB 5: ADUAN & LAYANAN WARGA -->
+            <!-- TAB 5: ADUAN -->
             <section id="section-aduan" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-bold mb-4 text-slate-800">Daftar Masukan & Aduan Warga</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b text-sm text-slate-500">
-                                    <th class="p-3">Nama</th>
-                                    <th class="p-3">RT</th>
-                                    <th class="p-3">Pesan / Aduan</th>
-                                    <th class="p-3">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-aduan" class="divide-y text-sm">
-                                <!-- Data Aduan dimuat via JS -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <h2 class="text-lg font-bold mb-4">Daftar Masukan & Aduan Warga</h2>
+                    <table class="w-full text-left border-collapse">
+                        <thead><tr class="border-b text-sm text-slate-500"><th class="p-3">Nama</th><th class="p-3">RT</th><th class="p-3">Pesan / Aduan</th><th class="p-3">Aksi</th></tr></thead>
+                        <tbody id="tabel-aduan" class="divide-y text-sm"></tbody>
+                    </table>
                 </div>
             </section>
-
         </main>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- 3. LOGIKA JAVASCRIPT & FIREBASE INTEGRATION                 -->
-    <!-- ============================================================ -->
     <script>
-        // CONFIGURASI FIREBASE (Ganti dengan config milik Anda)
-       const firebaseConfig = {
+        const firebaseConfig = {
   apiKey: "AIzaSyB3soQUtEAn0J09uBWQT6JeGhZGnGmCUZc",
   authDomain: "rw011-mekarindah.firebaseapp.com",
   projectId: "rw011-mekarindah",
@@ -360,86 +283,77 @@
 };
 
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // ------------------------------------------------------------
-        // LOGIKA TAB NAVIGATION & RENDER INPUT
-        // ------------------------------------------------------------
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('bg-blue-600', 'text-white');
                 el.classList.add('text-slate-600', 'hover:bg-slate-100');
             });
-
-            const targetSection = document.getElementById(`section-${tabName}`);
+            document.getElementById(`section-${tabName}`)?.classList.remove('hidden');
             const targetTab = document.getElementById(`tab-${tabName}`);
-            
-            if (targetSection) targetSection.classList.remove('hidden');
             if (targetTab) {
                 targetTab.classList.add('bg-blue-600', 'text-white');
                 targetTab.classList.remove('text-slate-600', 'hover:bg-slate-100');
             }
         }
 
-        // Render Field RT 01-06 secara rasional
-        (function renderDemografiFields() {
-            const container = document.getElementById('container-demografi-rt');
+        // Render Field RT 01-06 (Nama, Foto, KK)
+        (function renderRTFields() {
+            const container = document.getElementById('container-rt-fields');
             if (!container) return;
             let html = '';
             for (let i = 1; i <= 6; i++) {
                 const rtNum = String(i).padStart(2, '0');
                 html += `
-                    <div>
-                        <label class="block text-xs font-medium text-slate-500 mb-1">RT ${rtNum} (KK)</label>
-                        <input type="number" id="kk-rt-${rtNum}" min="0" placeholder="0" class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                        <span class="font-bold text-sm text-blue-700">RT ${rtNum}</span>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Nama Ketua RT ${rtNum}</label>
+                            <input type="text" id="rt-${rtNum}-nama" placeholder="Nama Ketua RT" class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">URL Foto Ketua RT ${rtNum}</label>
+                            <input type="text" id="rt-${rtNum}-foto" placeholder="https://..." class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Jumlah KK</label>
+                            <input type="number" id="rt-${rtNum}-kk" min="0" placeholder="0" class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                        </div>
                     </div>
                 `;
             }
             container.innerHTML = html;
         })();
 
-        // ------------------------------------------------------------
-        // AUTHENTICATION LISTENERS
-        // ------------------------------------------------------------
+        // Auth Listener
         firebase.auth().onAuthStateChanged((user) => {
-            const loginScreen = document.getElementById('login-screen');
-            const mainDashboard = document.getElementById('main-dashboard');
-
             if (user) {
-                loginScreen.classList.add('hidden');
-                mainDashboard.classList.remove('hidden');
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-dashboard').classList.remove('hidden');
                 initDataListeners();
             } else {
-                loginScreen.classList.remove('hidden');
-                mainDashboard.classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('main-dashboard').classList.add('hidden');
             }
         });
 
         function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-password').value;
-
-            firebase.auth().signInWithEmailAndPassword(email, pass)
-                .then(() => alert("Login Berhasil!"))
-                .catch(err => alert("Gagal Login: " + err.message));
+            firebase.auth().signInWithEmailAndPassword(
+                document.getElementById('login-email').value,
+                document.getElementById('login-password').value
+            ).then(() => alert("Login Berhasil!")).catch(err => alert("Gagal Login: " + err.message));
         }
 
         function handleLogout() {
-            if (confirm("Apakah Anda yakin ingin keluar?")) {
-                firebase.auth().signOut();
-            }
+            if (confirm("Yakin ingin keluar?")) firebase.auth().signOut();
         }
 
-        // ------------------------------------------------------------
-        // REALTIME DATA LISTENERS (FIRESTORE)
-        // ------------------------------------------------------------
         function initDataListeners() {
-            // 1. Listen Mading
+            // Mading
             db.collection("mading").orderBy("created_at", "desc").onSnapshot(snapshot => {
                 const tbody = document.getElementById("tabel-mading");
                 tbody.innerHTML = "";
@@ -451,22 +365,17 @@
                             <td class="p-3">${tgl}</td>
                             <td class="p-3 font-medium">${d.judul || '-'}</td>
                             <td class="p-3"><span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">${d.kategori || 'Umum'}</span></td>
-                            <td class="p-3">
-                                <button onclick="hapusMading('${doc.id}')" class="text-red-600 hover:underline">Hapus</button>
-                            </td>
+                            <td class="p-3"><button onclick="hapusMading('${doc.id}')" class="text-red-600 hover:underline">Hapus</button></td>
                         </tr>
                     `;
                 });
             });
 
-            // Load Edisi Mading Cover
             db.collection("settings").doc("mading_edisi").get().then(doc => {
-                if (doc.exists) {
-                    document.getElementById("mading-edisi").value = doc.data().judul || "";
-                }
+                if (doc.exists) document.getElementById("mading-edisi").value = doc.data().judul || "";
             });
 
-            // 2. Listen Kas
+            // Kas
             db.collection("kas").orderBy("tanggal", "desc").onSnapshot(snapshot => {
                 const tbody = document.getElementById("tabel-kas");
                 tbody.innerHTML = "";
@@ -480,15 +389,13 @@
                             <td class="p-3 font-medium">${d.keterangan || '-'}</td>
                             <td class="p-3 text-green-600 font-semibold">${debit}</td>
                             <td class="p-3 text-red-600 font-semibold">${kredit}</td>
-                            <td class="p-3">
-                                <button onclick="hapusKas('${doc.id}')" class="text-red-600 hover:underline">Hapus</button>
-                            </td>
+                            <td class="p-3"><button onclick="hapusKas('${doc.id}')" class="text-red-600 hover:underline">Hapus</button> Puis</td>
                         </tr>
                     `;
                 });
             });
 
-            // 3. Listen Kegiatan
+            // Kegiatan
             db.collection("kegiatan").orderBy("tanggal", "desc").onSnapshot(snapshot => {
                 const tbody = document.getElementById("tabel-kegiatan");
                 tbody.innerHTML = "";
@@ -499,15 +406,13 @@
                             <td class="p-3">${d.tanggal || '-'}</td>
                             <td class="p-3 font-medium">${d.judul || '-'}</td>
                             <td class="p-3">${d.penanggungjawab || '-'}</td>
-                            <td class="p-3">
-                                <button onclick="hapusKegiatan('${doc.id}')" class="text-red-600 hover:underline">Hapus</button>
-                            </td>
+                            <td class="p-3"><button onclick="hapusKegiatan('${doc.id}')" class="text-red-600 hover:underline">Hapus</button></td>
                         </tr>
                     `;
                 });
             });
 
-            // 4. Listen Aduan Warga
+            // Aduan
             db.collection("aduan").orderBy("created_at", "desc").onSnapshot(snapshot => {
                 const tbody = document.getElementById("tabel-aduan");
                 tbody.innerHTML = "";
@@ -518,45 +423,70 @@
                             <td class="p-3 font-semibold">${d.nama || '-'}</td>
                             <td class="p-3">${d.rt || '-'}</td>
                             <td class="p-3">${d.pesan || '-'}</td>
-                            <td class="p-3">
-                                <button onclick="hapusAduan('${doc.id}')" class="text-red-600 hover:underline">Hapus</button>
-                            </td>
+                            <td class="p-3"><button onclick="hapusAduan('${doc.id}')" class="text-red-600 hover:underline">Hapus</button></td>
                         </tr>
                     `;
                 });
             });
 
-            // Load Profil & Pengurus Existing
+            // Load Profil & RT
             db.collection("settings").doc("profil_informasi").get().then(doc => {
                 if (doc.exists) {
                     const d = doc.data();
                     document.getElementById("profil-sambutan-judul").value = d.sambutan_judul || "";
                     document.getElementById("profil-sambutan-isi").value = d.sambutan_isi || "";
                     document.getElementById("profil-foto-rw").value = d.foto_rw || "";
+                    
                     document.getElementById("pengurus-ketua").value = d.ketua || "";
                     document.getElementById("pengurus-sekretaris").value = d.sekretaris || "";
+                    document.getElementById("pengurus-foto-sekretaris").value = d.foto_sekretaris || "";
                     document.getElementById("pengurus-bendahara").value = d.bendahara || "";
-                    
-                    if (d.demografi) {
+                    document.getElementById("pengurus-foto-bendahara").value = d.foto_bendahara || "";
+
+                    if (d.data_rt) {
                         for (let i = 1; i <= 6; i++) {
                             const rtNum = String(i).padStart(2, '0');
-                            const field = document.getElementById(`kk-rt-${rtNum}`);
-                            if (field) field.value = d.demografi[`rt_${rtNum}`] || 0;
+                            const rtInfo = d.data_rt[`rt_${rtNum}`] || {};
+                            document.getElementById(`rt-${rtNum}-nama`).value = rtInfo.nama || "";
+                            document.getElementById(`rt-${rtNum}-foto`).value = rtInfo.foto || "";
+                            document.getElementById(`rt-${rtNum}-kk`).value = rtInfo.kk || 0;
                         }
                     }
                 }
             });
         }
 
-        // ------------------------------------------------------------
-        // WRITE / UPDATE / DELETE FUNCTIONS
-        // ------------------------------------------------------------
+        function simpanProfilLengkap(e) {
+            e.preventDefault();
+            const dataRtObj = {};
+            for (let i = 1; i <= 6; i++) {
+                const rtNum = String(i).padStart(2, '0');
+                dataRtObj[`rt_${rtNum}`] = {
+                    nama: document.getElementById(`rt-${rtNum}-nama`).value,
+                    foto: document.getElementById(`rt-${rtNum}-foto`).value,
+                    kk: Number(document.getElementById(`rt-${rtNum}-kk`).value) || 0
+                };
+            }
+
+            db.collection("settings").doc("profil_informasi").set({
+                sambutan_judul: document.getElementById("profil-sambutan-judul").value,
+                sambutan_isi: document.getElementById("profil-sambutan-isi").value,
+                foto_rw: document.getElementById("profil-foto-rw").value,
+                ketua: document.getElementById("pengurus-ketua").value,
+                sekretaris: document.getElementById("pengurus-sekretaris").value,
+                foto_sekretaris: document.getElementById("pengurus-foto-sekretaris").value,
+                bendahara: document.getElementById("pengurus-bendahara").value,
+                foto_bendahara: document.getElementById("pengurus-foto-bendahara").value,
+                data_rt: dataRtObj
+            }, { merge: true })
+            .then(() => alert("Seluruh Profil & Data RT Berhasil Disimpan!"))
+            .catch(err => alert("Gagal: " + err.message));
+        }
+
         function simpanEdisiMading(e) {
             e.preventDefault();
-            const judul = document.getElementById("mading-edisi").value;
-            db.collection("settings").doc("mading_edisi").set({ judul }, { merge: true })
-                .then(() => alert("Edisi Cover Mading Berhasil Diperbarui!"))
-                .catch(err => alert("Error: " + err.message));
+            db.collection("settings").doc("mading_edisi").set({ judul: document.getElementById("mading-edisi").value }, { merge: true })
+                .then(() => alert("Edisi Cover Disimpan!"));
         }
 
         function tambahMading(e) {
@@ -566,18 +496,10 @@
                 kategori: document.getElementById("mading-kategori").value,
                 isi: document.getElementById("mading-isi").value,
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert("Pengumuman Mading Berhasil Diterbitkan!");
-                e.target.reset();
-            }).catch(err => alert("Gagal: " + err.message));
+            }).then(() => { alert("Mading Diterbitkan!"); e.target.reset(); });
         }
 
-        function hapusMading(id) {
-            if (confirm("Yakin hapus pengumuman mading ini?")) {
-                db.collection("mading").doc(id).delete();
-            }
-        }
-
+        function hapusMading(id) { if (confirm("Hapus mading ini?")) db.collection("mading").doc(id).delete(); }
         function tambahKas(e) {
             e.preventDefault();
             db.collection("kas").add({
@@ -586,18 +508,9 @@
                 jumlah: Number(document.getElementById("kas-jumlah").value),
                 keterangan: document.getElementById("kas-keterangan").value,
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert("Transaksi Kas Disimpan!");
-                e.target.reset();
-            }).catch(err => alert("Gagal: " + err.message));
+            }).then(() => { alert("Kas Disimpan!"); e.target.reset(); });
         }
-
-        function hapusKas(id) {
-            if (confirm("Yakin hapus transaksi kas ini?")) {
-                db.collection("kas").doc(id).delete();
-            }
-        }
-
+        function hapusKas(id) { if (confirm("Hapus transaksi ini?")) db.collection("kas").doc(id).delete(); }
         function tambahKegiatan(e) {
             e.preventDefault();
             db.collection("kegiatan").add({
@@ -607,45 +520,10 @@
                 foto: document.getElementById("kegiatan-foto").value,
                 rincian: document.getElementById("kegiatan-rincian").value,
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert("Laporan Kegiatan Disimpan!");
-                e.target.reset();
-            }).catch(err => alert("Gagal: " + err.message));
+            }).then(() => { alert("Kegiatan Disimpan!"); e.target.reset(); });
         }
-
-        function hapusKegiatan(id) {
-            if (confirm("Yakin hapus laporan kegiatan ini?")) {
-                db.collection("kegiatan").doc(id).delete();
-            }
-        }
-
-        function hapusAduan(id) {
-            if (confirm("Hapus pesan aduan ini?")) {
-                db.collection("aduan").doc(id).delete();
-            }
-        }
-
-        function simpanProfilDemografi(e) {
-            e.preventDefault();
-            const demografiData = {};
-            for (let i = 1; i <= 6; i++) {
-                const rtNum = String(i).padStart(2, '0');
-                const val = document.getElementById(`kk-rt-${rtNum}`).value;
-                demografiData[`rt_${rtNum}`] = Number(val) || 0;
-            }
-
-            db.collection("settings").doc("profil_informasi").set({
-                sambutan_judul: document.getElementById("profil-sambutan-judul").value,
-                sambutan_isi: document.getElementById("profil-sambutan-isi").value,
-                foto_rw: document.getElementById("profil-foto-rw").value,
-                ketua: document.getElementById("pengurus-ketua").value,
-                sekretaris: document.getElementById("pengurus-sekretaris").value,
-                bendahara: document.getElementById("pengurus-bendahara").value,
-                demografi: demografiData
-            }, { merge: true })
-            .then(() => alert("Profil & Demografi Berhasil Diperbarui!"))
-            .catch(err => alert("Gagal memperbarui: " + err.message));
-        }
+        function hapusKegiatan(id) { if (confirm("Hapus kegiatan ini?")) db.collection("kegiatan").doc(id).delete(); }
+        function hapusAduan(id) { if (confirm("Hapus aduan ini?")) db.collection("aduan").doc(id).delete(); }
     </script>
 </body>
 </html>

@@ -220,9 +220,9 @@
     <!-- ============================================================ -->
     <!-- LOGIKA JAVASCRIPT & FIREBASE READ-ONLY                       -->
     <!-- ============================================================ -->
-   <script>
+  <script>
     // Konfigurasi Firebase
-    const firebaseConfig = {
+   const firebaseConfig = {
   apiKey: "AIzaSyB3soQUtEAn0J09uBWQT6JeGhZGnGmCUZc",
   authDomain: "rw011-mekarindah.firebaseapp.com",
   projectId: "rw011-mekarindah",
@@ -232,37 +232,37 @@
   measurementId: "G-DGH0CZG2GJ"
 };
 
-
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // 1. LISTEN DATA PROFIL, PENGURUS, RT & 11 SEKSI
+    // 1. LISTEN DATA PROFIL, EDISI MADING, PENGURUS, RT & 11 SEKSI
     db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
         if (doc.exists) {
-            const d = doc.data(); // Variabel 'd' didefinisikan di sini!
+            const d = doc.data();
 
-            // Sambutan
+            // --- A. EDISI MADING ---
+            if (document.getElementById("view-mading-edisi")) {
+                document.getElementById("view-mading-edisi").innerText = d.mading_judul || d.edisi_mading || "Edisi Mading RW Mekarindah";
+            }
+
+            // --- B. SAMBUTAN KETUA RW ---
             if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
             if (document.getElementById("view-sambutan-isi")) document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "";
 
-            // Pengurus Inti (Foto & Nama)
-            const defaultRwFoto = "https://i.ibb.co.com/XxhmsmK6/Upfoto-FIv-Tayta9b-Ts5-Rp-Q17q-Sw-NB122j-DXMcqi3ek-JJOfa-J6-DS.jpg";
+            // --- C. PENGURUS INTI (Foto & Nama) ---
+            const defaultFoto = "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Pengurus";
             
-            if (document.getElementById("view-foto-rw")) document.getElementById("view-foto-rw").src = d.foto_rw || defaultRwFoto;
-            if (document.getElementById("view-foto-rw-2")) document.getElementById("view-foto-rw-2").src = d.foto_rw || defaultRwFoto;
+            if (document.getElementById("view-foto-rw")) document.getElementById("view-foto-rw").src = d.foto_rw || defaultFoto;
+            if (document.getElementById("view-foto-rw-2")) document.getElementById("view-foto-rw-2").src = d.foto_rw || defaultFoto;
             if (document.getElementById("view-ketua-rw")) document.getElementById("view-ketua-rw").innerText = d.ketua || "-";
 
             if (document.getElementById("view-sekretaris")) document.getElementById("view-sekretaris").innerText = d.sekretaris || "-";
-            if (document.getElementById("view-foto-sekretaris")) {
-                document.getElementById("view-foto-sekretaris").src = d.foto_sekretaris || "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Sekretaris";
-            }
+            if (document.getElementById("view-foto-sekretaris")) document.getElementById("view-foto-sekretaris").src = d.foto_sekretaris || defaultFoto;
 
             if (document.getElementById("view-bendahara")) document.getElementById("view-bendahara").innerText = d.bendahara || "-";
-            if (document.getElementById("view-foto-bendahara")) {
-                document.getElementById("view-foto-bendahara").src = d.foto_bendahara || "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Bendahara";
-            }
+            if (document.getElementById("view-foto-bendahara")) document.getElementById("view-foto-bendahara").src = d.foto_bendahara || defaultFoto;
 
-            // Render Kartu RT 01 - RT 06
+            // --- D. RENDER KARTU RT 01 - RT 06 ---
             const containerRT = document.getElementById("container-rt-warga");
             if (containerRT) {
                 containerRT.innerHTML = "";
@@ -287,7 +287,7 @@
                 }
             }
 
-            // Render 11 Koordinator Seksi (Sekarang aman di DALAM snapshot)
+            // --- E. RENDER 11 KOORDINATOR SEKSI ---
             const containerSeksi = document.getElementById("container-seksi-warga");
             if (containerSeksi) {
                 const listSeksi = [
@@ -318,7 +318,7 @@
         }
     });
 
-    // 2. LISTEN DATA MADING / PENGUMUMAN
+    // 2. LISTEN PENGUMUMAN MADING
     db.collection("mading").orderBy("created_at", "desc").onSnapshot(snapshot => {
         const containerMading = document.getElementById("container-mading");
         if (containerMading) {
@@ -342,7 +342,7 @@
         }
     });
 
-    // 3. LISTEN DATA LAPORAN KEGIATAN
+    // 3. LISTEN LAPORAN KEGIATAN
     db.collection("kegiatan").orderBy("tanggal", "desc").onSnapshot(snapshot => {
         const containerKegiatan = document.getElementById("container-kegiatan");
         if (containerKegiatan) {
@@ -371,7 +371,7 @@
         }
     });
 
-    // 4. LISTEN DATA LAPORAN KAS / KEUANGAN
+    // 4. LISTEN LAPORAN KAS
     db.collection("kas").orderBy("tanggal", "desc").onSnapshot(snapshot => {
         const containerKas = document.getElementById("tabel-kas-index");
         let totalDebit = 0;
@@ -398,14 +398,14 @@
             }
         });
 
-        // Update Ringkasan Saldo Kas
+        // Update Total & Saldo Akhir Kas
         const saldoAkhir = totalDebit - totalKredit;
         if (document.getElementById("kas-total-masuk")) document.getElementById("kas-total-masuk").innerText = "Rp " + totalDebit.toLocaleString('id-ID');
         if (document.getElementById("kas-total-keluar")) document.getElementById("kas-total-keluar").innerText = "Rp " + totalKredit.toLocaleString('id-ID');
         if (document.getElementById("kas-saldo-akhir")) document.getElementById("kas-saldo-akhir").innerText = "Rp " + saldoAkhir.toLocaleString('id-ID');
     });
 
-    // 5. KIRIM ADUAN WARGA
+    // 5. FUNGSI KIRIM ADUAN
     function kirimAduan(e) {
         e.preventDefault();
         const nama = document.getElementById("aduan-nama").value;

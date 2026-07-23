@@ -255,41 +255,34 @@
 <!-- ========================================== -->
     <!-- SCRIPT UTAMA FIREBASE & RENDER MAJALAH RW  -->
     <!-- ========================================== -->
-    <script>
+    
       // Inisialisasi Firebase
-      if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+    if (typeof firebase !== 'undefined' && !firebase.apps.length) {
           firebase.initializeApp(firebaseConfig);
       }
       const db = firebase.firestore();
 
-      // 1. LISTEN SETTINGS & PROFIL (Edisi Mading & Profil)
+      // 1. LISTEN SETTINGS & PROFIL
       db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
           if (doc.exists) {
               const d = doc.data();
-              console.log("📌 Full Data Settings Firestore:", d);
-
-              // Ambil Edisi Mading dari SEMUA kemungkinan nama field di Firestore
-              let edisiVal = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || d.periode || d.mading || d.judul;
-
-              // Fallback jika nama field berupa teks dinamis
+              let edisiVal = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || d.periode;
+              
               if (!edisiVal) {
                   for (let key in d) {
-                      if (key.toLowerCase().includes("mading") || key.toLowerCase().includes("edisi") || key.toLowerCase().includes("judul")) {
+                      if (key.toLowerCase().includes("mading") || key.toLowerCase().includes("edisi")) {
                           edisiVal = d[key];
                           break;
                       }
                   }
               }
 
-              // Update ke elemen Edisi Mading
               const elEdisi = document.getElementById("view-edisi-mading");
               if (elEdisi) elEdisi.innerText = edisiVal || "Edisi Mading RW Mekarindah";
 
-              // B. Sambutan Ketua RW
               if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
               if (document.getElementById("view-sambutan-isi")) document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "";
 
-              // C. Pengurus Inti
               const defaultFoto = "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Pengurus";
               if (document.getElementById("view-foto-rw")) document.getElementById("view-foto-rw").src = d.foto_rw || defaultFoto;
               if (document.getElementById("view-foto-rw-2")) document.getElementById("view-foto-rw-2").src = d.foto_rw || defaultFoto;
@@ -301,7 +294,6 @@
               if (document.getElementById("view-bendahara")) document.getElementById("view-bendahara").innerText = d.bendahara || "-";
               if (document.getElementById("view-foto-bendahara")) document.getElementById("view-foto-bendahara").src = d.foto_bendahara || defaultFoto;
 
-              // D. Kartu RT 01 - RT 06
               const containerRT = document.getElementById("container-rt-warga") || document.getElementById("view-container-rt");
               if (containerRT) {
                   containerRT.innerHTML = "";
@@ -326,7 +318,6 @@
                   }
               }
 
-              // E. 11 Koordinator Seksi
               const containerSeksi = document.getElementById("container-seksi-warga") || document.getElementById("view-container-seksi");
               if (containerSeksi) {
                   const listSeksi = [
@@ -357,7 +348,7 @@
           }
       }, err => console.error("Error Profil:", err));
 
-      // 3. LISTEN LAPORAN KAS / KEUANGAN (Parse Fleksibel)
+      // 2. LISTEN LAPORAN KAS / KEUANGAN
       db.collection("kas").onSnapshot(snapshot => {
           let totalDebit = 0;
           let totalKredit = 0;
@@ -366,37 +357,25 @@
           if (containerKas) containerKas.innerHTML = "";
 
           const docs = [];
-          snapshot.forEach(doc => {
-              const item = { id: doc.id, ...doc.data() };
-              console.log("📌 Data Dokumen Kas:", item);
-              docs.push(item);
-          });
-
+          snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
           docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
 
           docs.forEach(data => {
-              // Bersihkan string nominal dari "Rp", koma, atau titik
               let rawNominal = data.jumlah || data.nominal || data.total || 0;
-              if (typeof rawNominal === 'string') {
-                  rawNominal = rawNominal.replace(/[^0-9]/g, '');
-              }
+              if (typeof rawNominal === 'string') rawNominal = rawNominal.replace(/[^0-9]/g, '');
               const nominal = Number(rawNominal) || 0;
 
-              // Deteksi Jenis Transaksi
               const jenis = String(data.jenis || data.tipe || data.kategori || '').toLowerCase();
               const isDebit = (jenis === 'debit' || jenis === 'masuk' || jenis === 'pemasukan' || jenis === 'in');
 
-              if (isDebit) {
-                  totalDebit += nominal;
-              } else {
-                  totalKredit += nominal;
-              }
+              if (isDebit) totalDebit += nominal;
+              else totalKredit += nominal;
 
               if (containerKas) {
                   containerKas.innerHTML += `
                       <tr class="border-b text-xs">
                           <td class="p-2.5">${data.tanggal || '-'}</td>
-                          <td class="p-2.5 font-medium text-slate-800">${data.keterangan || data.uraian || data.deskripsi || '-'}</td>
+                          <td class="p-2.5 font-medium text-slate-800">${data.keterangan || data.uraian || '-'}</td>
                           <td class="p-2.5 ${isDebit ? 'text-green-600 font-bold' : 'text-slate-400'}">${isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
                           <td class="p-2.5 ${!isDebit ? 'text-red-600 font-bold' : 'text-slate-400'}">${!isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
                       </tr>
@@ -404,18 +383,15 @@
               }
           });
 
-          // Calculation Result
           const saldoAkhir = totalDebit - totalKredit;
           const fmtMasuk = "Rp " + totalDebit.toLocaleString('id-ID');
           const fmtKeluar = "Rp " + totalKredit.toLocaleString('id-ID');
           const fmtSaldo = "Rp " + saldoAkhir.toLocaleString('id-ID');
 
-          // Render Hasil Keuangan
           if (document.getElementById("kas-total-masuk")) document.getElementById("kas-total-masuk").innerText = fmtMasuk;
           if (document.getElementById("kas-total-keluar")) document.getElementById("kas-total-keluar").innerText = fmtKeluar;
           if (document.getElementById("kas-saldo-akhir")) document.getElementById("kas-saldo-akhir").innerText = fmtSaldo;
           if (document.getElementById("view-saldo-kas")) document.getElementById("view-saldo-kas").innerText = fmtSaldo;
-
       }, err => console.error("Error Kas:", err));
     </script>
 </body>

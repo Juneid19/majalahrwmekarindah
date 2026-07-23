@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mading & Informasi Digital - RW Mekarindah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #0d7a3a 0%, #0f172a 100%); }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 leading-relaxed">
+
+    <!-- ============================================================ -->
+    <!-- 1. COVER UTAMA                                              -->
+    <!-- ============================================================ -->
+    <header class="gradient-bg text-white min-h-screen flex flex-col justify-between items-center text-center p-6 relative">
+        <div class="my-auto flex flex-col items-center max-w-3xl">
+            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white p-2 shadow-2xl mb-6 flex items-center justify-center border-4 border-blue-500">
+                <img id="img-logo" src="logo.jpg" alt="Logo RW Mekarindah" class="w-full h-full object-contain rounded-full">
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-3">RW MEKARINDAH</h1>
+            <p class="text-slate-300 text-base md:text-lg mb-8 max-w-xl">Pusat Informasi, Transparansi Kegiatan, Laporan Keuangan, dan Layanan Digital Warga RW Mekarindah.</p>
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 px-6 py-3 rounded-full shadow-lg">
+                <span class="text-xs uppercase tracking-widest text-blue-400 font-semibold block">Edisi Mading</span>
+                <h2 id="view-edisi-mading" class="text-lg md:text-xl font-bold text-white">Memuat Edisi...</h2>
+            </div>
+        </div>
+        <div class="animate-bounce pb-4 text-slate-400 text-sm flex flex-col items-center">
+            <span>Gulir ke bawah</span>
+            <svg class="w-5 h-5 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </div>
+    </header>
+
+    <!-- CONTAINER UTAMA -->
+    <main class="max-w-5xl mx-auto px-4 py-12 space-y-16">
+
+        <!-- ============================================================ -->
+        <!-- 2. SAMBUTAN & FOTO KETUA RW                                 -->
+        <!-- ============================================================ -->
+        <section class="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200">
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <div class="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden bg-slate-100 flex-shrink-0 border-2 border-slate-200 shadow-md">
+                    <img id="view-foto-rw" src="" alt="Foto Ketua RW" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 space-y-3 text-center md:text-left">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full">Sambutan Pengurus</span>
+                    <h2 id="view-sambutan-judul" class="text-2xl font-bold text-slate-800">Sambutan Ketua RW</h2>
+                    <p id="view-sambutan-isi" class="text-slate-600 text-sm md:text-base leading-relaxed">Memuat sambutan...</p>
+                    <p id="view-nama-rw" class="font-semibold text-slate-800 text-sm pt-2">- Ketua RW Mekarindah</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 3. PROFIL & DEMOGRAFI                                       -->
+        <!-- ============================================================ -->
+        <section class="space-y-6">
+            <div class="text-center max-w-xl mx-auto">
+                <h2 class="text-2xl font-bold text-slate-800">Profil & Demografi Wilayah</h2>
+                <p class="text-slate-500 text-sm">Struktur kepengurusan dan sebaran warga RW Mekarindah</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-slate-800 mb-4 border-l-4 border-blue-600 pl-3">Pengurus Inti RW</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+                        <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500">
+                            <img id="view-foto-rw-2" src="" class="w-full h-full object-cover">
+                        </div>
+                        <p class="text-xs font-semibold text-blue-600">Ketua RW</p>
+                        <p id="view-ketua-rw" class="font-bold text-slate-800 text-sm md:text-base">-</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+                        <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500">
+                            <img id="view-foto-sekretaris" src="" class="w-full h-full object-cover">
+                        </div>
+                        <p class="text-xs font-semibold text-blue-600">Sekretaris</p>
+                        <p id="view-sekretaris" class="font-bold text-slate-800 text-sm md:text-base">-</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+                        <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500">
+                            <img id="view-foto-bendahara" src="" class="w-full h-full object-cover">
+                        </div>
+                        <p class="text-xs font-semibold text-blue-600">Bendahara</p>
+                        <p id="view-bendahara" class="font-bold text-slate-800 text-sm md:text-base">-</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-slate-800 mb-4 border-l-4 border-blue-600 pl-3">Daftar Ketua RT & Warga</h3>
+                <div id="container-rt-warga" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"></div>
+            </div>
+            <div class="mt-8">
+                <h3 class="text-xl font-bold text-slate-800 mb-4 border-l-4 border-blue-600 pl-3">Koordinator Seksi RW</h3>
+                <div id="container-seksi-warga" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 4. KEGIATAN KOORDINATOR                                      -->
+        <!-- ============================================================ -->
+        <section class="space-y-6">
+            <div class="text-center max-w-xl mx-auto">
+                <h2 class="text-2xl font-bold text-slate-800">Laporan Kegiatan</h2>
+                <p class="text-slate-500 text-sm">Dokumentasi dan laporan dari masing-masing koordinator</p>
+            </div>
+            <div id="view-container-kegiatan" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 5. LAPORAN KEUANGAN KAS                                      -->
+        <!-- ============================================================ -->
+        <section class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">Transparansi Keuangan Kas</h2>
+                    <p class="text-slate-500 text-sm">Laporan kas masuk dan kas keluar warga</p>
+                </div>
+                <div class="bg-green-50 border border-green-200 px-4 py-2 rounded-2xl text-right">
+                    <span class="text-xs text-green-600 font-medium block">Total Saldo Kas</span>
+                    <span id="view-saldo-kas" class="text-xl font-extrabold text-green-700">Rp 0</span>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                    <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-center">
+                        <p class="text-[10px] font-semibold text-emerald-600 uppercase tracking-wider">Pemasukan</p>
+                        <h4 id="kas-total-masuk" class="text-sm sm:text-base font-bold text-emerald-700 mt-0.5">Rp 0</h4>
+                    </div>
+                    <div class="bg-red-50 border border-red-200 p-3 rounded-xl text-center">
+                        <p class="text-[10px] font-semibold text-red-600 uppercase tracking-wider">Pengeluaran</p>
+                        <h4 id="kas-total-keluar" class="text-sm sm:text-base font-bold text-red-700 mt-0.5">Rp 0</h4>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl text-center">
+                        <p class="text-[10px] font-semibold text-blue-600 uppercase tracking-wider">Saldo Akhir</p>
+                        <h4 id="kas-saldo-akhir" class="text-sm sm:text-base font-extrabold text-blue-700 mt-0.5">Rp 0</h4>
+                    </div>
+                </div>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b text-xs uppercase text-slate-400">
+                            <th class="p-3">Tanggal</th>
+                            <th class="p-3">Keterangan</th>
+                            <th class="p-3">Debit</th>
+                            <th class="p-3">Kredit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="view-tabel-kas" class="divide-y text-sm"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 6. ADUAN & LAYANAN WARGA                                     -->
+        <!-- ============================================================ -->
+        <section class="bg-blue-600 rounded-3xl p-6 md:p-10 text-white shadow-xl space-y-6">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <h2 class="text-2xl md:text-3xl font-bold">Aduan & Layanan Warga</h2>
+                <p class="text-blue-100 text-sm">Sampaikan aspirasi, aduan, atau permintaan surat pengantar secara online</p>
+            </div>
+            <form id="form-aduan" class="max-w-xl mx-auto space-y-4 text-slate-800">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="aduan-nama" placeholder="Nama Lengkap" required class="w-full px-4 py-3 rounded-xl outline-none">
+                    <input type="text" id="aduan-rt" placeholder="Asal RT (misal: RT 02)" required class="w-full px-4 py-3 rounded-xl outline-none">
+                </div>
+                <textarea id="aduan-pesan" rows="3" placeholder="Tuliskan aduan atau permohonan layanan..." required class="w-full px-4 py-3 rounded-xl outline-none"></textarea>
+                <button type="submit" id="btn-kirim-aduan" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition shadow-lg">Kirim Pesan / Aduan</button>
+            </form>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 7. MADING DIGITAL (PENGUMUMAN)                              -->
+        <!-- ============================================================ -->
+        <section class="space-y-6">
+            <div class="text-center max-w-xl mx-auto">
+                <h2 class="text-2xl font-bold text-slate-800">Mading Digital Warga</h2>
+                <p class="text-slate-500 text-sm">Pengumuman dan informasi resmi pengurus</p>
+            </div>
+            <div id="view-container-mading" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-center py-6 text-sm border-t border-slate-800">
+        <p>&copy; RW Mekarindah. Sistem Informasi & Mading Digital.</p>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- LOGIKA JAVASCRIPT & FIREBASE                                -->
+    <!-- ============================================================ -->
+    <script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyB3soQUtEAn0J09uBWQT6JeGhZGnGmCUZc",
+        authDomain: "rw011-mekarindah.firebaseapp.com",
+        projectId: "rw011-mekarindah",
+        storageBucket: "rw011-mekarindah.firebasestorage.app",
+        messagingSenderId: "1080174436962",
+        appId: "1:1080174436962:web:6fdd796771013291b4273b",
+        measurementId: "G-DGH0CZG2GJ"
+    };
+
+    // Placeholder Gambar Lokal (Tidak error walau offline)
+    var PH_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect width='150' height='150' rx='75' fill='%23e2e8f0'/%3E%3Ctext x='75' y='80' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%2364748b'%3ELOGO%3C/text%3E%3C/svg%3E";
+    var PH_FOTO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23e2e8f0'/%3E%3Ctext x='100' y='105' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%2364748b'%3EFoto%3C/text%3E%3C/svg%3E";
+
+    var logoEl = document.getElementById("img-logo");
+    if (logoEl) { logoEl.onerror = function() { this.src = PH_LOGO; this.onerror = null; }; }
+
+    if (typeof firebase !== "undefined" && !firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    var db = firebase.firestore();
+
+    // ==========================================
+    // 1. LISTEN SETTINGS & PROFIL
+    // ==========================================
+    db.collection("settings").doc("profil_informasi").onSnapshot(function(doc) {
+        if (!doc.exists) return;
+        var d = doc.data();
+        
+        // Set Edisi Mading
+        var elEdisi = document.getElementById("view-edisi-mading");
+        if (elEdisi) elEdisi.innerText = d.edisi_mading || "Edisi Mading RW Mekarindah";
+        
+        var el;
+        el = document.getElementById("view-sambutan-judul"); if (el) el.innerText = d.sambutan_judul || "Sambutan Ketua RW";
+        el = document.getElementById("view-sambutan-isi"); if (el) el.innerText = d.sambutan_isi || "";
+        el = document.getElementById("view-nama-rw"); if (el) el.innerText = "- " + (d.ketua || "Ketua RW Mekarindah");
+        
+        el = document.getElementById("view-foto-rw"); if (el) { el.src = d.foto_rw || PH_FOTO; el.onerror = function(){this.src=PH_FOTO;this.onerror=null;}; }
+        el = document.getElementById("view-foto-rw-2"); if (el) { el.src = d.foto_rw || PH_FOTO; el.onerror = function(){this.src=PH_FOTO;this.onerror=null;}; }
+        el = document.getElementById("view-ketua-rw"); if (el) el.innerText = d.ketua || "-";
+        el = document.getElementById("view-sekretaris"); if (el) el.innerText = d.sekretaris || "-";
+        el = document.getElementById("view-foto-sekretaris"); if (el) { el.src = d.foto_sekretaris || PH_FOTO; el.onerror = function(){this.src=PH_FOTO;this.onerror=null;}; }
+        el = document.getElementById("view-bendahara"); if (el) el.innerText = d.bendahara || "-";
+        el = document.getElementById("view-foto-bendahara"); if (el) { el.src = d.foto_bendahara || PH_FOTO; el.onerror = function(){this.src=PH_FOTO;this.onerror=null;}; }
+
+        var containerRT = document.getElementById("container-rt-warga");
+        if (containerRT) {
+            containerRT.innerHTML = "";
+            for (var i = 1; i <= 6; i++) {
+                var rtNum = String(i).padStart(2, "0");
+                var rtInfo = (d.data_rt && d.data_rt["rt_" + rtNum]) ? d.data_rt["rt_" + rtNum] : {};
+                var namaRT = rtInfo.nama || "Ketua RT " + rtNum;
+                var fotoRT = rtInfo.foto || "";
+                var jumlahKK = rtInfo.kk || 0;
+                var phRT = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%232563eb'/%3E%3Ctext x='100' y='108' text-anchor='middle' font-family='sans-serif' font-size='20' fill='white' font-weight='bold'%3ERT+" + rtNum + "%3C/text%3E%3C/svg%3E";
+                containerRT.innerHTML += '<div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center"><div class="w-14 h-14 mx-auto mb-2 rounded-full overflow-hidden border border-slate-300"><img src="' + (fotoRT || phRT) + '" alt="RT ' + rtNum + '" class="w-full h-full object-cover" onerror="this.onerror=null;this.src=\'' + phRT + '\';"></div><span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">RT ' + rtNum + '</span><p class="font-bold text-slate-800 text-xs mt-1 truncate">' + namaRT + '</p><p class="text-[11px] text-slate-500">' + jumlahKK + ' KK</p></div>';
+            }
+        }
+
+        var containerSeksi = document.getElementById("container-seksi-warga");
+        if (containerSeksi) {
+            var listSeksi = [{id:"keamanan",nama:"Seksi Keamanan"},{id:"pertamanan",nama:"Seksi Pertamanan"},{id:"hari_besar",nama:"Seksi Hari Besar"},{id:"sosial",nama:"Seksi Sosial Warga"},{id:"pkk",nama:"Seksi PKK"},{id:"olahraga",nama:"Seksi Olahraga"},{id:"hukum",nama:"Seksi Hukum"},{id:"ekonomi",nama:"Seksi Ekonomi"},{id:"kesehatan",nama:"Seksi Kesehatan"},{id:"sampah",nama:"Seksi Sampah"},{id:"komunikasi",nama:"Seksi Komunikasi"}];
+            containerSeksi.innerHTML = "";
+            listSeksi.forEach(function(s) {
+                var namaKoor = (d.data_seksi && d.data_seksi[s.id]) ? d.data_seksi[s.id] : "Belum Diisi";
+                containerSeksi.innerHTML += '<div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm"><p class="text-[11px] font-semibold text-blue-600">' + s.nama + '</p><p class="font-bold text-slate-800 text-xs mt-0.5">' + namaKoor + '</p></div>';
+            });
+        }
+    }, function(err) { console.error("Error Profil:", err); });
+
+    // ==========================================
+    // 2. LISTEN KAS
+    // ==========================================
+    db.collection("kas").onSnapshot(function(snapshot) {
+        var totalDebit = 0, totalKredit = 0;
+        var containerKas = document.getElementById("view-tabel-kas");
+        if (containerKas) containerKas.innerHTML = "";
+        var docs = [];
+        snapshot.forEach(function(doc) { docs.push({id: doc.id, data: doc.data()}); });
+        docs.sort(function(a, b) { return (b.data.tanggal || "").localeCompare(a.data.tanggal || ""); });
+        if (docs.length === 0 && containerKas) { containerKas.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 text-sm">Belum ada data keuangan</td></tr>'; }
+        docs.forEach(function(item) {
+            var data = item.data;
+            var raw = data.jumlah || data.nominal || data.total || 0;
+            if (typeof raw === "string") raw = raw.replace(/[^0-9]/g, "");
+            var nominal = Number(raw) || 0;
+            var jenis = String(data.jenis || data.tipe || data.kategori || "").toLowerCase();
+            var isDebit = (jenis === "debit" || jenis === "masuk" || jenis === "pemasukan" || jenis === "in");
+            if (isDebit) totalDebit += nominal; else totalKredit += nominal;
+            if (containerKas) { containerKas.innerHTML += '<tr class="border-b text-xs hover:bg-slate-50"><td class="p-2.5 whitespace-nowrap">' + (data.tanggal || "-") + '</td><td class="p-2.5 font-medium text-slate-800">' + (data.keterangan || data.uraian || "-") + '</td><td class="p-2.5 ' + (isDebit ? "text-green-600 font-bold" : "text-slate-400") + '">' + (isDebit ? "Rp " + nominal.toLocaleString("id-ID") : "-") + '</td><td class="p-2.5 ' + (!isDebit ? "text-red-600 font-bold" : "text-slate-400") + '">' + (!isDebit ? "Rp " + nominal.toLocaleString("id-ID") : "-") + '</td></tr>'; }
+        });
+        var saldo = totalDebit - totalKredit;
+        var el;
+        el = document.getElementById("kas-total-masuk"); if (el) el.innerText = "Rp " + totalDebit.toLocaleString("id-ID");
+        el = document.getElementById("kas-total-keluar"); if (el) el.innerText = "Rp " + totalKredit.toLocaleString("id-ID");
+        el = document.getElementById("kas-saldo-akhir"); if (el) el.innerText = "Rp " + saldo.toLocaleString("id-ID");
+        el = document.getElementById("view-saldo-kas"); if (el) el.innerText = "Rp " + saldo.toLocaleString("id-ID");
+    }, function(err) { console.error("Error Kas:", err); });
+
+    // ==========================================
+    // 3. LISTEN KEGIATAN
+    // ==========================================
+    db.collection("kegiatan").orderBy("tanggal", "desc").onSnapshot(function(snapshot) {
+        var container = document.getElementById("view-container-kegiatan");
+        if (!container) return; container.innerHTML = "";
+        var docs = []; snapshot.forEach(function(doc) { docs.push({id: doc.id, data: doc.data()}); });
+        if (docs.length === 0) { container.innerHTML = '<div class="col-span-full text-center py-16 text-slate-400"><p class="text-sm font-medium">Belum ada laporan kegiatan</p></div>'; return; }
+        docs.forEach(function(item) {
+            var data = item.data; var judul = data.judul || data.title || "Kegiatan"; var deskripsi = data.deskripsi || data.isi || data.keterangan || ""; var tanggal = data.tanggal || "-"; var koor = data.koordinator || data.pelaksana || data.seksi || "-"; var gambar = data.gambar || data.foto || data.image || ""; var shortD = deskripsi.length > 120 ? deskripsi.substring(0, 120) + "..." : deskripsi; var imgH = ""; if (gambar) imgH = '<div class="w-full h-44 overflow-hidden rounded-t-2xl bg-slate-100"><img src="' + gambar + '" alt="' + judul + '" class="w-full h-full object-cover" onerror="this.parentElement.style.display=\'none\'"></div>';
+            container.innerHTML += '<article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">' + imgH + '<div class="p-5 space-y-2"><div class="flex items-center justify-between text-xs text-slate-400"><span class="bg-green-50 text-green-700 font-semibold px-2.5 py-1 rounded-full">' + tanggal + '</span><span class="text-blue-600 font-medium">' + koor + '</span></div><h3 class="font-bold text-slate-800 text-base leading-snug">' + judul + '</h3><p class="text-slate-500 text-sm leading-relaxed">' + shortD + '</p></div></article>';
+        });
+    }, function(err) { console.error("Error Kegiatan:", err); });
+
+    // ==========================================
+    // 4. LISTEN MADING DIGITAL
+    // ==========================================
+    db.collection("mading").orderBy("tanggal", "desc").onSnapshot(function(snapshot) {
+        var container = document.getElementById("view-container-mading");
+        if (!container) return; container.innerHTML = "";
+        var docs = []; snapshot.forEach(function(doc) { docs.push({id: doc.id, data: doc.data()}); });
+        if (docs.length === 0) { container.innerHTML = '<div class="col-span-full text-center py-16 text-slate-400"><p class="text-sm font-medium">Belum ada pengumuman mading</p></div>'; return; }
+        docs.forEach(function(item) {
+            var data = item.data; var judul = data.judul || data.title || "Tanpa Judul"; var isi = data.isi || data.konten || data.content || data.deskripsi || ""; var tanggal = data.tanggal || data.tgl || "-"; var gambar = data.gambar || data.foto || data.image || ""; var penulis = data.penulis || data.oleh || data.author || "Admin"; var shortI = isi.length > 150 ? isi.substring(0, 150) + "..." : isi; var imgH = ""; if (gambar) imgH = '<div class="w-full h-40 overflow-hidden rounded-t-2xl bg-slate-100"><img src="' + gambar + '" alt="' + judul + '" class="w-full h-full object-cover" onerror="this.parentElement.style.display=\'none\'"></div>'; var btnRead = ""; if (isi.length > 150) { btnRead = '<button onclick="toggleMading(\'mading-full-' + item.id + '\',this)" class="text-blue-600 text-xs font-semibold hover:underline mt-1">Baca Selengkapnya &rarr;</button>'; }
+            container.innerHTML += '<article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">' + imgH + '<div class="p-5 space-y-3"><div class="flex items-center justify-between text-xs text-slate-400"><span class="bg-blue-50 text-blue-600 font-semibold px-2.5 py-1 rounded-full">' + tanggal + '</span><span>oleh ' + penulis + '</span></div><h3 class="font-bold text-slate-800 text-base leading-snug">' + judul + '</h3><p id="mading-short-' + item.id + '" class="text-slate-500 text-sm leading-relaxed">' + shortI + '</p><p id="mading-full-' + item.id + '" class="text-slate-500 text-sm leading-relaxed hidden">' + isi + '</p>' + btnRead + '</div></article>';
+        });
+    }, function(err) { console.error("Error Mading:", err); });
+
+    // Toggle Baca Selengkapnya
+    window.toggleMading = function(fullId, btn) { var shortId = fullId.replace("mading-full-", "mading-short-"); var elF = document.getElementById(fullId); var elS = document.getElementById(shortId); if (elF && elS) { elF.classList.remove("hidden"); elS.classList.add("hidden"); btn.style.display = "none"; } };
+
+    // ==========================================
+    // 5. KIRIM ADUAN
+    // ==========================================
+    document.getElementById("form-aduan").addEventListener("submit", function(e) {
+        e.preventDefault(); var nama = document.getElementById("aduan-nama").value.trim(); var rt = document.getElementById("aduan-rt").value.trim(); var pesan = document.getElementById("aduan-pesan").value.trim();
+        if (!nama || !rt || !pesan) { alert("Semua field harus diisi!"); return; }
+        var btn = document.getElementById("btn-kirim-aduan"); var btnT = btn.innerText; btn.disabled = true; btn.innerText = "Mengirim...";
+        db.collection("aduan").add({ nama: nama, rt: rt, pesan: pesan, timestamp: firebase.firestore.FieldValue.serverTimestamp(), status: "baru" }).then(function() { alert("Pesan / Aduan berhasil dikirim!"); e.target.reset(); }).catch(function(err) { alert("Gagal: " + err.message); }).finally(function() { btn.disabled = false; btn.innerText = btnT; });
+    });
+    </script>
+</body>
+</html>

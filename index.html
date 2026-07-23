@@ -236,175 +236,178 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
    // 1. LISTEN DATA PROFIL & EDISI MADING
-    db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
-        if (doc.exists) {
-            const d = doc.data();
+db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
+    if (doc.exists) {
+        const d = doc.data();
+        console.log("🔍 Data Profil/Settings dari Firestore:", d); // Cek isi field di F12 Console
 
-            // Render Edisi Mading (Mengecek semua kemungkinan variabel nama edisi)
-            const elemEdisi = document.getElementById("view-edisi-mading") || document.getElementById("view-mading-edisi");
-            if (elemEdisi) {
-                elemEdisi.innerText = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || "Edisi Mading RW Mekarindah";
-            }
-
-            // Sambutan Ketua RW
-            if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
-            if (document.getElementById("view-sambutan-isi")) document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "";
-
-            // Pengurus Inti
-            const defaultFoto = "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Pengurus";
-            if (document.getElementById("view-foto-rw")) document.getElementById("view-foto-rw").src = d.foto_rw || defaultFoto;
-            if (document.getElementById("view-foto-rw-2")) document.getElementById("view-foto-rw-2").src = d.foto_rw || defaultFoto;
-            if (document.getElementById("view-ketua-rw")) document.getElementById("view-ketua-rw").innerText = d.ketua || "-";
-
-            if (document.getElementById("view-sekretaris")) document.getElementById("view-sekretaris").innerText = d.sekretaris || "-";
-            if (document.getElementById("view-foto-sekretaris")) document.getElementById("view-foto-sekretaris").src = d.foto_sekretaris || defaultFoto;
-
-            if (document.getElementById("view-bendahara")) document.getElementById("view-bendahara").innerText = d.bendahara || "-";
-            if (document.getElementById("view-foto-bendahara")) document.getElementById("view-foto-bendahara").src = d.foto_bendahara || defaultFoto;
-
-            // Render Kartu RT 01 - RT 06
-            const containerRT = document.getElementById("container-rt-warga") || document.getElementById("view-container-rt");
-            if (containerRT) {
-                containerRT.innerHTML = "";
-                for (let i = 1; i <= 6; i++) {
-                    const rtNum = String(i).padStart(2, '0');
-                    const rtInfo = (d.data_rt && d.data_rt[`rt_${rtNum}`]) ? d.data_rt[`rt_${rtNum}`] : {};
-                    
-                    const namaRT = rtInfo.nama || `Ketua RT ${rtNum}`;
-                    const fotoRT = rtInfo.foto || `https://dummyimage.com/200x200/3b82f6/ffffff.png&text=RT+${rtNum}`;
-                    const jumlahKK = rtInfo.kk || 0;
-
-                    containerRT.innerHTML += `
-                        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
-                            <div class="w-14 h-14 mx-auto mb-2 rounded-full overflow-hidden border border-slate-300">
-                                <img src="${fotoRT}" alt="RT ${rtNum}" class="w-full h-full object-cover" onerror="this.src='https://dummyimage.com/200x200/cccccc/ffffff.png&text=RT+${rtNum}'">
-                            </div>
-                            <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">RT ${rtNum}</span>
-                            <p class="font-bold text-slate-800 text-xs mt-1 truncate">${namaRT}</p>
-                            <p class="text-[11px] text-slate-500">${jumlahKK} KK</p>
-                        </div>
-                    `;
-                }
-            }
-
-            // Render 11 Koordinator Seksi
-            const containerSeksi = document.getElementById("container-seksi-warga") || document.getElementById("view-container-seksi");
-            if (containerSeksi) {
-                const listSeksi = [
-                    { id: "keamanan", nama: "Seksi Keamanan" },
-                    { id: "pertamanan", nama: "Seksi Pertamanan" },
-                    { id: "hari_besar", nama: "Seksi Hari Besar" },
-                    { id: "sosial", nama: "Seksi Sosial Warga" },
-                    { id: "pkk", nama: "Seksi PKK" },
-                    { id: "olahraga", nama: "Seksi Olahraga" },
-                    { id: "hukum", nama: "Seksi Hukum" },
-                    { id: "ekonomi", nama: "Seksi Ekonomi" },
-                    { id: "kesehatan", nama: "Seksi Kesehatan" },
-                    { id: "sampah", nama: "Seksi Sampah" },
-                    { id: "komunikasi", nama: "Seksi Komunikasi" }
-                ];
-
-                containerSeksi.innerHTML = "";
-                listSeksi.forEach(s => {
-                    const namaKoordinator = (d.data_seksi && d.data_seksi[s.id]) ? d.data_seksi[s.id] : "Belum Diisi";
-                    containerSeksi.innerHTML += `
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                            <p class="text-[11px] font-semibold text-blue-600">${s.nama}</p>
-                            <p class="font-bold text-slate-800 text-xs mt-0.5">${namaKoordinator}</p>
-                        </div>
-                    `;
-                });
-            }
-        }
-    });
-
-    // 2. LISTEN LAPORAN KEGIATAN
-    db.collection("kegiatan").onSnapshot(snapshot => {
-        const containerKegiatan = document.getElementById("view-container-kegiatan") || document.getElementById("container-kegiatan");
-        if (!containerKegiatan) return;
-
-        containerKegiatan.innerHTML = "";
-        if (snapshot.empty) {
-            containerKegiatan.innerHTML = `<p class="text-slate-500 text-sm col-span-full text-center py-4">Belum ada laporan kegiatan.</p>`;
-            return;
+        // Render Edisi Mading (Cek semua kemungkinan kunci)
+        const elemEdisi = document.getElementById("view-edisi-mading") || document.getElementById("view-mading-edisi");
+        if (elemEdisi) {
+            const edisiText = d.edisi || d.edisi_mading || d.mading_edisi || d.mading_judul || d.judul_mading || d.periode || d.bulan || "Edisi Mading RW Mekarindah";
+            elemEdisi.innerText = edisiText;
         }
 
-        const docs = [];
-        snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-        docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
+        // Sambutan Ketua RW
+        if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
+        if (document.getElementById("view-sambutan-isi")) document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "";
 
-        docs.forEach(data => {
-            const fotoHtml = data.foto 
-                ? `<img src="${data.foto}" class="w-full h-40 object-cover rounded-xl mb-3" onerror="this.style.display='none'">` 
-                : '';
+        // Pengurus Inti
+        const defaultFoto = "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Pengurus";
+        if (document.getElementById("view-foto-rw")) document.getElementById("view-foto-rw").src = d.foto_rw || defaultFoto;
+        if (document.getElementById("view-foto-rw-2")) document.getElementById("view-foto-rw-2").src = d.foto_rw || defaultFoto;
+        if (document.getElementById("view-ketua-rw")) document.getElementById("view-ketua-rw").innerText = d.ketua || "-";
+        if (document.getElementById("view-sekretaris")) document.getElementById("view-sekretaris").innerText = d.sekretaris || "-";
+        if (document.getElementById("view-foto-sekretaris")) document.getElementById("view-foto-sekretaris").src = d.foto_sekretaris || defaultFoto;
+        if (document.getElementById("view-bendahara")) document.getElementById("view-bendahara").innerText = d.bendahara || "-";
+        if (document.getElementById("view-foto-bendahara")) document.getElementById("view-foto-bendahara").src = d.foto_bendahara || defaultFoto;
 
-            containerKegiatan.innerHTML += `
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                    <div>
-                        ${fotoHtml}
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${data.seksi || 'Seksi RW'}</span>
-                            <span class="text-xs text-slate-400">${data.tanggal || ''}</span>
+        // Render Kartu RT
+        const containerRT = document.getElementById("container-rt-warga") || document.getElementById("view-container-rt");
+        if (containerRT) {
+            containerRT.innerHTML = "";
+            for (let i = 1; i <= 6; i++) {
+                const rtNum = String(i).padStart(2, '0');
+                const rtInfo = (d.data_rt && d.data_rt[`rt_${rtNum}`]) ? d.data_rt[`rt_${rtNum}`] : {};
+                const namaRT = rtInfo.nama || `Ketua RT ${rtNum}`;
+                const fotoRT = rtInfo.foto || `https://dummyimage.com/200x200/3b82f6/ffffff.png&text=RT+${rtNum}`;
+                const jumlahKK = rtInfo.kk || 0;
+
+                containerRT.innerHTML += `
+                    <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
+                        <div class="w-14 h-14 mx-auto mb-2 rounded-full overflow-hidden border border-slate-300">
+                            <img src="${fotoRT}" alt="RT ${rtNum}" class="w-full h-full object-cover" onerror="this.src='https://dummyimage.com/200x200/cccccc/ffffff.png&text=RT+${rtNum}'">
                         </div>
-                        <h4 class="font-bold text-slate-800 text-base mb-1">${data.judul || ''}</h4>
-                        <p class="text-slate-600 text-xs whitespace-pre-line">${data.rincian || data.deskripsi || ''}</p>
+                        <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">RT ${rtNum}</span>
+                        <p class="font-bold text-slate-800 text-xs mt-1 truncate">${namaRT}</p>
+                        <p class="text-[11px] text-slate-500">${jumlahKK} KK</p>
                     </div>
-                </div>
-            `;
-        });
-    });
-
-    // 3. LISTEN LAPORAN KAS / KEUANGAN (DENGAN CONVERT ANGKA)
-    db.collection("kas").onSnapshot(snapshot => {
-        const containerKas = document.getElementById("view-tabel-kas") || document.getElementById("tabel-kas-index");
-        let totalDebit = 0;
-        let totalKredit = 0;
-
-        if (containerKas) containerKas.innerHTML = "";
-
-        const docs = [];
-        snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-        docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
-
-        docs.forEach(data => {
-            // Parsing nominal agar tetap berupa angka walau tersimpan dalam bentuk string
-            let nominal = 0;
-            if (typeof data.jumlah === "number") {
-                nominal = data.jumlah;
-            } else if (typeof data.jumlah === "string") {
-                nominal = parseFloat(data.jumlah.replace(/[^0-9.-]/g, '')) || 0;
-            } else if (data.nominal) {
-                nominal = parseFloat(String(data.nominal).replace(/[^0-9.-]/g, '')) || 0;
-            }
-
-            const jenis = String(data.jenis || data.kategori || data.tipe || '').toLowerCase();
-            const isDebit = (jenis === 'debit' || jenis === 'masuk' || jenis === 'pemasukan');
-
-            if (isDebit) {
-                totalDebit += nominal;
-            } else {
-                totalKredit += nominal;
-            }
-
-            if (containerKas) {
-                containerKas.innerHTML += `
-                    <tr class="border-b text-xs">
-                        <td class="p-2.5">${data.tanggal || '-'}</td>
-                        <td class="p-2.5 font-medium text-slate-800">${data.keterangan || data.uraian || data.deskripsi || '-'}</td>
-                        <td class="p-2.5 ${isDebit ? 'text-green-600 font-bold' : 'text-slate-400'}">${isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
-                        <td class="p-2.5 ${!isDebit ? 'text-red-600 font-bold' : 'text-slate-400'}">${!isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
-                    </tr>
                 `;
             }
-        });
+        }
 
-        // Hitung Saldo Akhir
-        const saldoAkhir = totalDebit - totalKredit;
+        // Render Seksi
+        const containerSeksi = document.getElementById("container-seksi-warga") || document.getElementById("view-container-seksi");
+        if (containerSeksi) {
+            const listSeksi = [
+                { id: "keamanan", nama: "Seksi Keamanan" },
+                { id: "pertamanan", nama: "Seksi Pertamanan" },
+                { id: "hari_besar", nama: "Seksi Hari Besar" },
+                { id: "sosial", nama: "Seksi Sosial Warga" },
+                { id: "pkk", nama: "Seksi PKK" },
+                { id: "olahraga", nama: "Seksi Olahraga" },
+                { id: "hukum", nama: "Seksi Hukum" },
+                { id: "ekonomi", nama: "Seksi Ekonomi" },
+                { id: "kesehatan", nama: "Seksi Kesehatan" },
+                { id: "sampah", nama: "Seksi Sampah" },
+                { id: "komunikasi", nama: "Seksi Komunikasi" }
+            ];
+            containerSeksi.innerHTML = "";
+            listSeksi.forEach(s => {
+                const namaKoordinator = (d.data_seksi && d.data_seksi[s.id]) ? d.data_seksi[s.id] : "Belum Diisi";
+                containerSeksi.innerHTML += `
+                    <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="text-[11px] font-semibold text-blue-600">${s.nama}</p>
+                        <p class="font-bold text-slate-800 text-xs mt-0.5">${namaKoordinator}</p>
+                    </div>
+                `;
+            });
+        }
+    }
+});
 
-        if (document.getElementById("kas-total-masuk")) document.getElementById("kas-total-masuk").innerText = "Rp " + totalDebit.toLocaleString('id-ID');
-        if (document.getElementById("kas-total-keluar")) document.getElementById("kas-total-keluar").innerText = "Rp " + totalKredit.toLocaleString('id-ID');
-        if (document.getElementById("kas-saldo-akhir")) document.getElementById("kas-saldo-akhir").innerText = "Rp " + saldoAkhir.toLocaleString('id-ID');
+// 2. LISTEN LAPORAN KEGIATAN
+db.collection("kegiatan").onSnapshot(snapshot => {
+    const containerKegiatan = document.getElementById("view-container-kegiatan") || document.getElementById("container-kegiatan");
+    if (!containerKegiatan) return;
+
+    containerKegiatan.innerHTML = "";
+    if (snapshot.empty) {
+        containerKegiatan.innerHTML = `<p class="text-slate-500 text-sm col-span-full text-center py-4">Belum ada laporan kegiatan.</p>`;
+        return;
+    }
+
+    const docs = [];
+    snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+    docs.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
+
+    docs.forEach(data => {
+        const fotoHtml = data.foto 
+            ? `<img src="${data.foto}" class="w-full h-40 object-cover rounded-xl mb-3" onerror="this.style.display='none'">` 
+            : '';
+
+        containerKegiatan.innerHTML += `
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    ${fotoHtml}
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${data.seksi || 'Seksi RW'}</span>
+                        <span class="text-xs text-slate-400">${data.tanggal || ''}</span>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-base mb-1">${data.judul || ''}</h4>
+                    <p class="text-slate-600 text-xs whitespace-pre-line">${data.rincian || data.deskripsi || ''}</p>
+                </div>
+            </div>
+        `;
     });
+});
+
+// 3. LISTEN LAPORAN KAS / KEUANGAN
+db.collection("kas").onSnapshot(snapshot => {
+    const containerKas = document.getElementById("view-tabel-kas") || document.getElementById("tabel-kas-index");
+    let totalDebit = 0;
+    let totalKredit = 0;
+
+    if (containerKas) containerKas.innerHTML = "";
+
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        console.log("💰 Data Item Kas dari Firestore:", data); // Cek struktur item kas di F12 Console
+
+        // Ambil nominal (Cek jumlah, debit, kredit, nominal)
+        let nominal = 0;
+        let isDebit = false;
+
+        // Skema 1: Jika tersimpan di field 'debit' dan 'kredit' terpisah
+        if (data.debit !== undefined || data.kredit !== undefined) {
+            const deb = parseFloat(String(data.debit || 0).replace(/[^0-9.-]/g, '')) || 0;
+            const kre = parseFloat(String(data.kredit || 0).replace(/[^0-9.-]/g, '')) || 0;
+            if (deb > 0) { nominal = deb; isDebit = true; }
+            else if (kre > 0) { nominal = kre; isDebit = false; }
+        } else {
+            // Skema 2: Jika tersimpan di 'jumlah' atau 'nominal' + field 'jenis'/'tipe'
+            const val = data.jumlah || data.nominal || 0;
+            nominal = parseFloat(String(val).replace(/[^0-9.-]/g, '')) || 0;
+            
+            const jenis = String(data.jenis || data.kategori || data.tipe || '').toLowerCase();
+            isDebit = (jenis === 'debit' || jenis === 'masuk' || jenis === 'pemasukan');
+        }
+
+        if (isDebit) {
+            totalDebit += nominal;
+        } else {
+            totalKredit += nominal;
+        }
+
+        if (containerKas) {
+            containerKas.innerHTML += `
+                <tr class="border-b text-xs">
+                    <td class="p-2.5">${data.tanggal || '-'}</td>
+                    <td class="p-2.5 font-medium text-slate-800">${data.keterangan || data.uraian || data.deskripsi || '-'}</td>
+                    <td class="p-2.5 ${isDebit ? 'text-green-600 font-bold' : 'text-slate-400'}">${isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
+                    <td class="p-2.5 ${!isDebit ? 'text-red-600 font-bold' : 'text-slate-400'}">${!isDebit ? 'Rp ' + nominal.toLocaleString('id-ID') : '-'}</td>
+                </tr>
+            `;
+        }
+    });
+
+    const saldoAkhir = totalDebit - totalKredit;
+
+    // Update Tampilan Total
+    if (document.getElementById("kas-total-masuk")) document.getElementById("kas-total-masuk").innerText = "Rp " + totalDebit.toLocaleString('id-ID');
+    if (document.getElementById("kas-total-keluar")) document.getElementById("kas-total-keluar").innerText = "Rp " + totalKredit.toLocaleString('id-ID');
+    if (document.getElementById("kas-saldo-akhir")) document.getElementById("kas-saldo-akhir").innerText = "Rp " + saldoAkhir.toLocaleString('id-ID');
+});
 	
     // 4. KIRIM ADUAN
     function kirimAduan(e) {

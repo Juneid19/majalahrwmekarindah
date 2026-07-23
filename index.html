@@ -83,32 +83,44 @@
                 <p class="text-slate-500 text-sm">Struktur kepengurusan dan sebaran warga RW Mekarindah</p>
             </div>
 
-            <!-- Struktur Pengurus -->
-            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200">
-                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Struktur Kepengurusan</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <span class="text-xs text-slate-400 block mb-1">Ketua RW</span>
-                        <h4 id="view-ketua" class="font-bold text-slate-700">-</h4>
-                    </div>
-                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <span class="text-xs text-slate-400 block mb-1">Sekretaris</span>
-                        <h4 id="view-sekretaris" class="font-bold text-slate-700">-</h4>
-                    </div>
-                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <span class="text-xs text-slate-400 block mb-1">Bendahara</span>
-                        <h4 id="view-bendahara" class="font-bold text-slate-700">-</h4>
-                    </div>
-                </div>
+            <!-- STRUKTUR PENGURUS INTI -->
+<div class="mb-8">
+    <h3 class="text-xl font-bold text-slate-800 mb-4 border-l-4 border-blue-600 pl-3">Pengurus Inti RW</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- KETUA RW -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+            <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500">
+                <img id="view-foto-rw-2" src="https://dummyimage.com/200x200/2563eb/ffffff.png&text=Ketua+RW" class="w-full h-full object-cover">
             </div>
+            <p class="text-xs font-semibold text-blue-600">Ketua RW</p>
+            <p id="view-ketua-rw" class="font-bold text-slate-800 text-sm md:text-base">-</p>
+        </div>
+        <!-- SEKRETARIS -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+            <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500">
+                <img id="view-foto-sekretaris" src="https://dummyimage.com/200x200/cccccc/ffffff.png&text=Sekretaris" class="w-full h-full object-cover">
+            </div>
+            <p class="text-xs font-semibold text-blue-600">Sekretaris</p>
+            <p id="view-sekretaris" class="font-bold text-slate-800 text-sm md:text-base">-</p>
+        </div>
+        <!-- BENDAHARA -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+            <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500">
+                <img id="view-foto-bendahara" src="https://dummyimage.com/200x200/cccccc/ffffff.png&text=Bendahara" class="w-full h-full object-cover">
+            </div>
+            <p class="text-xs font-semibold text-blue-600">Bendahara</p>
+            <p id="view-bendahara" class="font-bold text-slate-800 text-sm md:text-base">-</p>
+        </div>
+    </div>
+</div>
 
-            <!-- Demografi KK per RT -->
-            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200">
-                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Data Demografi Warga (Jumlah KK)</h3>
-                <div id="view-demografi-rt" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-center">
-                    <!-- Loaded via JS -->
-                </div>
-            </div>
+<!-- DATA RT 01 - RT 06 (KARTU KETUA RT & KK) -->
+<div>
+    <h3 class="text-xl font-bold text-slate-800 mb-4 border-l-4 border-blue-600 pl-3">Daftar Ketua RT & Warga</h3>
+    <div id="container-rt-warga" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <!-- Dipasang otomatis via JS -->
+    </div>
+</div>
         </section>
 
         <!-- ============================================================ -->
@@ -225,31 +237,56 @@
         });
 
         db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
-            if (doc.exists) {
-                const d = doc.data();
-                document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
-                document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "Belum ada sambutan.";
-                document.getElementById("view-ketua").innerText = d.ketua || "-";
-                document.getElementById("view-nama-rw").innerText = `- ${d.ketua || 'Ketua RW'}`;
-                document.getElementById("view-sekretaris").innerText = d.sekretaris || "-";
-                document.getElementById("view-bendahara").innerText = d.bendahara || "-";
+    if (doc.exists) {
+        const d = doc.data();
 
-                // Render Demografi
-                const demoContainer = document.getElementById("view-demografi-rt");
-                demoContainer.innerHTML = "";
-                if (d.demografi) {
-                    Object.keys(d.demografi).sort().forEach(key => {
-                        const rtName = key.replace('rt_', 'RT ');
-                        demoContainer.innerHTML += `
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                                <span class="text-xs text-slate-400 block">${rtName.toUpperCase()}</span>
-                                <span class="text-base font-bold text-slate-700">${d.demografi[key]} KK</span>
-                            </div>
-                        `;
-                    });
-                }
+        // Sambutan
+        if (document.getElementById("view-sambutan-judul")) document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
+        if (document.getElementById("view-sambutan-isi")) document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "";
+
+        // Foto & Nama Pengurus Inti
+        const defaultRwFoto = "https://i.ibb.co.com/XxhmsmK6/Upfoto-FIv-Tayta9b-Ts5-Rp-Q17q-Sw-NB122j-DXMcqi3ek-JJOfa-J6-DS.jpg";
+        
+        if (document.getElementById("view-foto-rw")) document.getElementById("view-foto-rw").src = d.foto_rw || defaultRwFoto;
+        if (document.getElementById("view-foto-rw-2")) document.getElementById("view-foto-rw-2").src = d.foto_rw || defaultRwFoto;
+        if (document.getElementById("view-ketua-rw")) document.getElementById("view-ketua-rw").innerText = d.ketua || "-";
+
+        if (document.getElementById("view-sekretaris")) document.getElementById("view-sekretaris").innerText = d.sekretaris || "-";
+        if (document.getElementById("view-foto-sekretaris")) {
+            document.getElementById("view-foto-sekretaris").src = d.foto_sekretaris || "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Sekretaris";
+        }
+
+        if (document.getElementById("view-bendahara")) document.getElementById("view-bendahara").innerText = d.bendahara || "-";
+        if (document.getElementById("view-foto-bendahara")) {
+            document.getElementById("view-foto-bendahara").src = d.foto_bendahara || "https://dummyimage.com/200x200/cccccc/ffffff.png&text=Bendahara";
+        }
+
+        // Render Kartu RT 01 - RT 06
+        const containerRT = document.getElementById("container-rt-warga");
+        if (containerRT) {
+            containerRT.innerHTML = "";
+            for (let i = 1; i <= 6; i++) {
+                const rtNum = String(i).padStart(2, '0');
+                const rtInfo = (d.data_rt && d.data_rt[`rt_${rtNum}`]) ? d.data_rt[`rt_${rtNum}`] : {};
+                
+                const namaRT = rtInfo.nama || `Ketua RT ${rtNum}`;
+                const fotoRT = rtInfo.foto || `https://dummyimage.com/200x200/3b82f6/ffffff.png&text=RT+${rtNum}`;
+                const jumlahKK = rtInfo.kk || 0;
+
+                containerRT.innerHTML += `
+                    <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-center">
+                        <div class="w-14 h-14 mx-auto mb-2 rounded-full overflow-hidden border border-slate-300">
+                            <img src="${fotoRT}" alt="RT ${rtNum}" class="w-full h-full object-cover" onerror="this.src='https://dummyimage.com/200x200/cccccc/ffffff.png&text=RT+${rtNum}'">
+                        </div>
+                        <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">RT ${rtNum}</span>
+                        <p class="font-bold text-slate-800 text-xs mt-1 truncate">${namaRT}</p>
+                        <p class="text-[11px] text-slate-500">${jumlahKK} KK</p>
+                    </div>
+                `;
             }
-        });
+        }
+    }
+});
 
         // 2. Load Laporan Kegiatan
         db.collection("kegiatan").orderBy("tanggal", "desc").onSnapshot(snapshot => {

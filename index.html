@@ -542,11 +542,7 @@ db.collection("mading")
                 document.getElementById('idx-p-bendahara-nama').innerText = data.bendahara_nama || 'Bp. H. Sulaiman';
                 document.getElementById('idx-p-bendahara-foto').src = data.bendahara_foto || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80';
 
-                // 6 RT Realtime dari Database
-                document.getElementById('idx-rt1-nama').innerText = data.rt1_nama || 'Bp. Supardi';
-                document.getElementById('idx-rt1-foto').src = data.rt1_foto || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80';
-
-                document.getElementById('idx-rt2-nama').innerText = data.rt2_nama || 'Bp. Bambang S.';
+             // (Mulai Baris 545)
                 document.getElementById('idx-rt2-foto').src = data.rt2_foto || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80';
 
                 document.getElementById('idx-rt3-nama').innerText = data.rt3_nama || 'Bp. Joko S.';
@@ -563,12 +559,12 @@ db.collection("mading")
             }
         });
 
-       // 2. LOAD DATA KEGIATAN (BINGKAI FOTO ANTI-POTONG)
-db.collection("kegiatan").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-    const container = document.getElementById('idx-container-kegiatan');
-    container.innerHTML = '';
-    
-    if (snapshot.empty) {
+        // 2. LOAD DATA KEGIATAN (BINGKAI FOTO ANTI-POTONG)
+        db.collection("kegiatan").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+            const container = document.getElementById('idx-container-kegiatan');
+            if (container) {
+                container.innerHTML = '';
+            }    if (snapshot.empty) {
         container.innerHTML = `
             <div class="col-span-3 text-center py-12 text-slate-400">
                 <i class="fa-regular fa-image text-4xl mb-2"></i>

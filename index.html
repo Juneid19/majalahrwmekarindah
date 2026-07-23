@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mading & Informasi Digital - RW Mekarindah</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Firebase SDK (v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 leading-relaxed">
+
+    <!-- ============================================================ -->
+    <!-- 1. COVER UTAMA                                              -->
+    <!-- ============================================================ -->
+    <header class="gradient-bg text-white min-h-screen flex flex-col justify-between items-center text-center p-6 relative">
+        <div class="my-auto flex flex-col items-center max-w-3xl">
+            <!-- Logo Bulat di Tengah -->
+            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white p-2 shadow-2xl mb-6 flex items-center justify-center border-4 border-blue-500">
+                <img src="logo.png" alt="Logo RW Mekarindah" class="w-full h-full object-contain rounded-full" onerror="this.src='https://via.placeholder.com/150?text=LOGO'">
+            </div>
+            
+            <!-- Nama Web & Deskripsi -->
+            <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-3">
+                RW MEKARINDAH
+            </h1>
+            <p class="text-slate-300 text-base md:text-lg mb-8 max-w-xl">
+                Pusat Informasi, Transparansi Kegiatan, Laporan Keuangan, dan Layanan Digital Warga RW Mekarindah.
+            </p>
+
+            <!-- Banner Edisi Mading (Dapat Diupdate via Admin) -->
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 px-6 py-3 rounded-full shadow-lg">
+                <span class="text-xs uppercase tracking-widest text-blue-400 font-semibold block">Edisi Mading</span>
+                <h2 id="view-edisi-mading" class="text-lg md:text-xl font-bold text-white">Memuat Edisi...</h2>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="animate-bounce pb-4 text-slate-400 text-sm flex flex-col items-center">
+            <span>Gulir ke bawah</span>
+            <svg class="w-5 h-5 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </div>
+    </header>
+
+    <!-- CONTAINER UTAMA -->
+    <main class="max-w-5xl mx-auto px-4 py-12 space-y-16">
+
+        <!-- ============================================================ -->
+        <!-- 2. SAMBUTAN & FOTO KETUA RW                                 -->
+        <!-- ============================================================ -->
+        <section class="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200">
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <div class="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden bg-slate-100 flex-shrink-0 border-2 border-slate-200 shadow-md">
+                    <img id="view-foto-rw" src="rw.jpg" alt="Foto Ketua RW" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/200?text=Foto+RW'">
+                </div>
+                <div class="flex-1 space-y-3 text-center md:text-left">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full">Sambutan Pengurus</span>
+                    <h2 id="view-sambutan-judul" class="text-2xl font-bold text-slate-800">Sambutan Ketua RW</h2>
+                    <p id="view-sambutan-isi" class="text-slate-600 text-sm md:text-base leading-relaxed">
+                        Memuat sambutan...
+                    </p>
+                    <p id="view-nama-rw" class="font-semibold text-slate-800 text-sm pt-2">- Ketua RW Mekarindah</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 3. PROFIL & DEMOGRAFI (STRUKTUR ORGANISASI)                  -->
+        <!-- ============================================================ -->
+        <section class="space-y-6">
+            <div class="text-center max-w-xl mx-auto">
+                <h2 class="text-2xl font-bold text-slate-800">Profil & Demografi Wilayah</h2>
+                <p class="text-slate-500 text-sm">Struktur kepengurusan dan sebaran warga RW Mekarindah</p>
+            </div>
+
+            <!-- Struktur Pengurus -->
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Struktur Kepengurusan</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <span class="text-xs text-slate-400 block mb-1">Ketua RW</span>
+                        <h4 id="view-ketua" class="font-bold text-slate-700">-</h4>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <span class="text-xs text-slate-400 block mb-1">Sekretaris</span>
+                        <h4 id="view-sekretaris" class="font-bold text-slate-700">-</h4>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <span class="text-xs text-slate-400 block mb-1">Bendahara</span>
+                        <h4 id="view-bendahara" class="font-bold text-slate-700">-</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demografi KK per RT -->
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Data Demografi Warga (Jumlah KK)</h3>
+                <div id="view-demografi-rt" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-center">
+                    <!-- Loaded via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 4. KEGIATAN KOORDINATOR                                      -->
+        <!-- ============================================================ -->
+        <section class="space-y-6">
+            <div class="text-center max-w-xl mx-auto">
+                <h2 class="text-2xl font-bold text-slate-800">Laporan Kegiatan</h2>
+                <p class="text-slate-500 text-sm">Dokumentasi dan laporan dari masing-masing koordinator</p>
+            </div>
+
+            <div id="view-container-kegiatan" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Data Kegiatan dimuat via JS -->
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 5. LAPORAN KEUANGAN KAS                                      -->
+        <!-- ============================================================ -->
+        <section class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">Transparansi Keuangan Kas</h2>
+                    <p class="text-slate-500 text-sm">Laporan kas masuk dan kas keluar warga</p>
+                </div>
+                <div class="bg-green-50 border border-green-200 px-4 py-2 rounded-2xl text-right">
+                    <span class="text-xs text-green-600 font-medium block">Total Saldo Kas</span>
+                    <span id="view-saldo-kas" class="text-xl font-extrabold text-green-700">Rp 0</span>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b text-xs uppercase text-slate-400">
+                            <th class="p-3">Tanggal</th>
+                            <th class="p-3">Keterangan</th>
+                            <th class="p-3">Debit</th>
+                            <th class="p-3">Kredit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="view-tabel-kas" class="divide-y text-sm">
+                        <!-- Data Kas dimuat via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 6. ADUAN & LAYANAN WARGA                                     -->
+        <!-- ============================================================ -->
+        <section class="bg-blue-600 rounded-3xl p-6 md:p-10 text-white shadow-xl space-y-6">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <h2 class="text-2xl md:text-3xl font-bold">Aduan & Layanan Warga</h2>
+                <p class="text-blue-100 text-sm">Sampaikan aspirasi, aduan, atau permintaan surat pengantar secara online</p>
+            </div>
+
+            <form onsubmit="kirimAduan(event)" class="max-w-xl mx-auto space-y-4 text-slate-800">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="aduan-nama" placeholder="Nama Lengkap" required class="w-full px-4 py-3 rounded-xl outline-none">
+                    <input type="text" id="aduan-rt" placeholder="Asal RT (misal: RT 02)" required class="w-full px-4 py-3 rounded-xl outline-none">
+                </div>
+                <textarea id="aduan-pesan" rows="3" placeholder="Tuliskan aduan atau permohonan layanan..." required class="w-full px-4 py-3 rounded-xl outline-none"></textarea>
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition shadow-lg">
+                    Kirim Pesan / Aduan
+                </button>
+            </form>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 7. MADING DIGITAL (PENGUMUMAN)                              -->
+        <!-- ============================================================ -->
+        <section class="space-y-6">
+            <div class="text-center max-w-xl mx-auto">
+                <h2 class="text-2xl font-bold text-slate-800">Mading Digital Warga</h2>
+                <p class="text-slate-500 text-sm">Pengumuman dan informasi resmi pengurus</p>
+            </div>
+
+            <div id="view-container-mading" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Data Mading dimuat via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-center py-6 text-sm border-t border-slate-800">
+        <p>&copy; RW Mekarindah. Sistem Informasi & Mading Digital.</p>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- LOGIKA JAVASCRIPT & FIREBASE READ-ONLY                       -->
+    <!-- ============================================================ -->
+    <script>
+        // CONFIG FIREBASE (Sesuai milik Anda)
+        const firebaseConfig = {
+  apiKey: "AIzaSyB3soQUtEAn0J09uBWQT6JeGhZGnGmCUZc",
+  authDomain: "rw011-mekarindah.firebaseapp.com",
+  projectId: "rw011-mekarindah",
+  storageBucket: "rw011-mekarindah.firebasestorage.app",
+  messagingSenderId: "1080174436962",
+  appId: "1:1080174436962:web:6fdd796771013291b4273b",
+  measurementId: "G-DGH0CZG2GJ"
+};
+
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // 1. Load Edisi Mading & Profil
+        db.collection("settings").doc("mading_edisi").onSnapshot(doc => {
+            if (doc.exists) document.getElementById("view-edisi-mading").innerText = doc.data().judul || "-";
+        });
+
+        db.collection("settings").doc("profil_informasi").onSnapshot(doc => {
+            if (doc.exists) {
+                const d = doc.data();
+                document.getElementById("view-sambutan-judul").innerText = d.sambutan_judul || "Sambutan Ketua RW";
+                document.getElementById("view-sambutan-isi").innerText = d.sambutan_isi || "Belum ada sambutan.";
+                document.getElementById("view-ketua").innerText = d.ketua || "-";
+                document.getElementById("view-nama-rw").innerText = `- ${d.ketua || 'Ketua RW'}`;
+                document.getElementById("view-sekretaris").innerText = d.sekretaris || "-";
+                document.getElementById("view-bendahara").innerText = d.bendahara || "-";
+
+                // Render Demografi
+                const demoContainer = document.getElementById("view-demografi-rt");
+                demoContainer.innerHTML = "";
+                if (d.demografi) {
+                    Object.keys(d.demografi).sort().forEach(key => {
+                        const rtName = key.replace('rt_', 'RT ');
+                        demoContainer.innerHTML += `
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                <span class="text-xs text-slate-400 block">${rtName.toUpperCase()}</span>
+                                <span class="text-base font-bold text-slate-700">${d.demografi[key]} KK</span>
+                            </div>
+                        `;
+                    });
+                }
+            }
+        });
+
+        // 2. Load Laporan Kegiatan
+        db.collection("kegiatan").orderBy("tanggal", "desc").onSnapshot(snapshot => {
+            const container = document.getElementById("view-container-kegiatan");
+            container.innerHTML = "";
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                container.innerHTML += `
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 flex flex-col">
+                        <img src="${d.foto || 'https://via.placeholder.com/400x200'}" class="w-full h-48 object-cover" onerror="this.src='https://via.placeholder.com/400x200?text=Kegiatan'">
+                        <div class="p-5 space-y-2 flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center text-xs text-slate-400 mb-2">
+                                    <span>📅 ${d.tanggal || '-'}</span>
+                                    <span>👤 ${d.penanggungjawab || '-'}</span>
+                                </div>
+                                <h3 class="font-bold text-slate-800 text-lg">${d.judul || '-'}</h3>
+                                <p class="text-slate-600 text-sm mt-2">${d.rincian || ''}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        // 3. Load Kas & Hitung Saldo
+        db.collection("kas").orderBy("tanggal", "desc").onSnapshot(snapshot => {
+            const tbody = document.getElementById("view-tabel-kas");
+            tbody.innerHTML = "";
+            let totalDebit = 0;
+            let totalKredit = 0;
+
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                const jumlah = Number(d.jumlah) || 0;
+                
+                if (d.jenis === 'debit') totalDebit += jumlah;
+                if (d.jenis === 'kredit') totalKredit += jumlah;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="p-3 text-slate-500">${d.tanggal || '-'}</td>
+                        <td class="p-3 font-medium text-slate-700">${d.keterangan || '-'}</td>
+                        <td class="p-3 text-green-600 font-semibold">${d.jenis === 'debit' ? 'Rp ' + jumlah.toLocaleString('id-ID') : '-'}</td>
+                        <td class="p-3 text-red-600 font-semibold">${d.jenis === 'kredit' ? 'Rp ' + jumlah.toLocaleString('id-ID') : '-'}</td>
+                    </tr>
+                `;
+            });
+
+            const saldoAkhir = totalDebit - totalKredit;
+            document.getElementById("view-saldo-kas").innerText = `Rp ${saldoAkhir.toLocaleString('id-ID')}`;
+        });
+
+        // 4. Load Mading Digital
+        db.collection("mading").orderBy("created_at", "desc").onSnapshot(snapshot => {
+            const container = document.getElementById("view-container-mading");
+            container.innerHTML = "";
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                container.innerHTML += `
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                        <span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-semibold">${d.kategori || 'Informasi'}</span>
+                        <h3 class="font-bold text-slate-800 text-xl">${d.judul || '-'}</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">${d.isi || ''}</p>
+                    </div>
+                `;
+            });
+        });
+
+        // 5. Fungsi Kirim Aduan Warga
+        function kirimAduan(e) {
+            e.preventDefault();
+            db.collection("aduan").add({
+                nama: document.getElementById("aduan-nama").value,
+                rt: document.getElementById("aduan-rt").value,
+                pesan: document.getElementById("aduan-pesan").value,
+                created_at: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert("Aduan/Layanan berhasil dikirim ke pengurus!");
+                e.target.reset();
+            }).catch(err => alert("Gagal mengirim aduan: " + err.message));
+        }
+    </script>
+</body>
+</html>

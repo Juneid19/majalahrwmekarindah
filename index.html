@@ -532,21 +532,12 @@ db.collection("mading")
                 // Pengurus Inti Realtime
                 document.getElementById('idx-p-ketua-nama').innerText = data.ketua_nama || 'Abdul Aziz';
                 document.getElementById('idx-p-ketua-foto').src = data.ketua_foto || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80';
-                
-                document.getElementById('idx-p-sekretaris-nama').innerText = data.sekretaris_nama || 'Ibu Maya Putri';
-                document.getElementById('idx-p-sekretaris-foto').src = data.sekretaris_foto || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80';
-                
-                document.getElementById('idx-p-kesekretariatan-nama').innerText = data.kesekretariatan_nama || 'Bp. Riza Fahri';
-                document.getElementById('idx-p-kesekretariatan-foto').src = data.kesekretariatan_foto || 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80';
-                
-                document.getElementById('idx-p-bendahara-nama').innerText = data.bendahara_nama || 'Bp. H. Sulaiman';
-                document.getElementById('idx-p-bendahara-foto').src = data.bendahara_foto || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80';
+ document.getElementById('idx-rt5-nama').innerText = data.rt5_nama || 'Bp. H. Mulyono';
+                document.getElementById('idx-rt5-foto').src = data.rt5_foto || 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80';
 
-             document.getElementById('idx-rt6-nama').innerText = data.rt6_nama || 'Bp. Dr. Gunawan';
+                document.getElementById('idx-rt6-nama').innerText = data.rt6_nama || 'Bp. Dr. Gunawan';
                 document.getElementById('idx-rt6-foto').src = data.rt6_foto || 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=150&q=80';
             }
-        }, err => {
-            console.error("Error rw_profile:", err);
         });
 
         // 2. LOAD DATA KEGIATAN (BINGKAI FOTO ANTI-POTONG)

@@ -14,10 +14,10 @@
 <body class="bg-slate-50 font-sans text-slate-800 leading-relaxed">
 
     <!-- ============================================================ -->
-    <!-- 1. COVER UTAMA                                              -->
+    <!-- 1. COVER UTAMA (Sudah dihapus gulir ke bawah)                -->
     <!-- ============================================================ -->
-    <header class="gradient-bg text-white min-h-screen flex flex-col justify-between items-center text-center p-6 relative">
-        <div class="my-auto flex flex-col items-center max-w-3xl">
+    <header class="gradient-bg text-white min-h-screen flex flex-col justify-center items-center text-center p-6 relative">
+        <div class="flex flex-col items-center max-w-3xl">
             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white p-2 shadow-2xl mb-6 flex items-center justify-center border-4 border-blue-500">
                 <img id="img-logo" src="logo.jpg" alt="Logo RW Mekarindah" class="w-full h-full object-contain rounded-full">
             </div>
@@ -27,10 +27,6 @@
                 <span class="text-xs uppercase tracking-widest text-blue-400 font-semibold block">Edisi Mading</span>
                 <h2 id="view-edisi-mading" class="text-lg md:text-xl font-bold text-white">Memuat Edisi...</h2>
             </div>
-        </div>
-        <div class="animate-bounce pb-4 text-slate-400 text-sm flex flex-col items-center">
-            <span>Gulir ke bawah</span>
-            <svg class="w-5 h-5 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
         </div>
     </header>
 
@@ -55,7 +51,7 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- 3. PROFIL & DEMOGRAFI                                       -->
+        <!-- 3. PROFIL & DEMOGRAFI (PENGURUS INTI JADI 4 KOLOM)         -->
         <!-- ============================================================ -->
         <section class="space-y-6">
             <div class="text-center max-w-xl mx-auto">
@@ -64,7 +60,8 @@
             </div>
             <div class="mb-8">
                 <h3 class="text-xl font-bold text-slate-800 mb-4 border-l-4 border-blue-600 pl-3">Pengurus Inti RW</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- KETUA -->
                     <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
                         <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500">
                             <img id="view-foto-rw-2" src="" class="w-full h-full object-cover">
@@ -72,6 +69,7 @@
                         <p class="text-xs font-semibold text-blue-600">Ketua RW</p>
                         <p id="view-ketua-rw" class="font-bold text-slate-800 text-sm md:text-base">-</p>
                     </div>
+                    <!-- SEKRETARIS -->
                     <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
                         <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500">
                             <img id="view-foto-sekretaris" src="" class="w-full h-full object-cover">
@@ -79,6 +77,15 @@
                         <p class="text-xs font-semibold text-blue-600">Sekretaris</p>
                         <p id="view-sekretaris" class="font-bold text-slate-800 text-sm md:text-base">-</p>
                     </div>
+                    <!-- SEKRETARIAT (DITAMBAHKAN) -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+                        <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500">
+                            <img id="view-foto-sekretariat" src="" class="w-full h-full object-cover">
+                        </div>
+                        <p class="text-xs font-semibold text-blue-600">Sekretariat</p>
+                        <p id="view-sekretariat" class="font-bold text-slate-800 text-sm md:text-base">-</p>
+                    </div>
+                    <!-- BENDAHARA -->
                     <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
                         <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-500">
                             <img id="view-foto-bendahara" src="" class="w-full h-full object-cover">
@@ -99,7 +106,7 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- 4. KEGIATAN KOORDINATOR                                      -->
+        <!-- 4. KEGIATAN KOORDINATOR (JUDUL BESAR, TANGGAL, DESKRIPSI)  -->
         <!-- ============================================================ -->
         <section class="space-y-6">
             <div class="text-center max-w-xl mx-auto">
@@ -153,12 +160,12 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- 6. ADUAN & LAYANAN WARGA                                     -->
+        <!-- 6. ADUAN & LAYANAN (BACKGROUND HIJAU)                      -->
         <!-- ============================================================ -->
-        <section class="bg-blue-600 rounded-3xl p-6 md:p-10 text-white shadow-xl space-y-6">
+        <section style="background-color: #0d7a3a;" class="rounded-3xl p-6 md:p-10 text-white shadow-xl space-y-6">
             <div class="text-center max-w-xl mx-auto space-y-2">
                 <h2 class="text-2xl md:text-3xl font-bold">Aduan & Layanan Warga</h2>
-                <p class="text-blue-100 text-sm">Sampaikan aspirasi, aduan, atau permintaan surat pengantar secara online</p>
+                <p class="text-green-200 text-sm">Sampaikan aspirasi, aduan, atau permintaan surat pengantar secara online</p>
             </div>
             <form id="form-aduan" class="max-w-xl mx-auto space-y-4 text-slate-800">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -171,7 +178,53 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- 7. MADING DIGITAL (PENGUMUMAN)                              -->
+        <!-- 7. LOKASI & KONTAK MEDIA SOSIAL (DITAMBAHKAN)              -->
+        <!-- ============================================================ -->
+        <section class="space-y-6">
+            <div class="text-center max-w-xl mx-auto">
+                <h2 class="text-2xl font-bold text-slate-800">Lokasi & Media Komunikasi</h2>
+                <p class="text-slate-500 text-sm">Peta lokasi dan media sosial resmi RW Mekarindah</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <!-- MAP -->
+                <div class="md:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden h-full min-h-[300px] md:min-h-[350px]">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d12083.10825150267!2d107.16026854637171!3d-6.298106998110302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1smekar%20indah!5e1!3m2!1sid!2sid!4v1784095683736!5m2!1sid!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                </div>
+                <!-- KONTAK & MEDIA -->
+                <div class="md:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col justify-center space-y-5">
+                    <a href="https://chat.whatsapp.com/KaXK7QSQBwPJry6rX0BPVu" target="_blank" class="flex items-center gap-4 group">
+                        <div class="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center group-hover:bg-green-100 transition flex-shrink-0">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">WhatsApp Grup</p>
+                            <p class="text-xs text-slate-500">Bergabung dengan warga</p>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/rw011_mekarmukti" target="_blank" class="flex items-center gap-4 group">
+                        <div class="w-12 h-12 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center group-hover:bg-pink-100 transition flex-shrink-0">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">Instagram</p>
+                            <p class="text-xs text-slate-500">@rw011_mekarmukti</p>
+                        </div>
+                    </a>
+                    <a href="mailto:rw011.mekarmukti@gmail.com" class="flex items-center gap-4 group">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center group-hover:bg-blue-100 transition flex-shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">Email</p>
+                            <p class="text-xs text-slate-500">rw011.mekarmukti@gmail.com</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 8. MADING DIGITAL (PENGUMUMAN)                              -->
         <!-- ============================================================ -->
         <section class="space-y-6">
             <div class="text-center max-w-xl mx-auto">
@@ -201,7 +254,6 @@
         measurementId: "G-DGH0CZG2GJ"
     };
 
-    // Placeholder Gambar Lokal (Tidak error walau offline)
     var PH_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect width='150' height='150' rx='75' fill='%23e2e8f0'/%3E%3Ctext x='75' y='80' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%2364748b'%3ELOGO%3C/text%3E%3C/svg%3E";
     var PH_FOTO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23e2e8f0'/%3E%3Ctext x='100' y='105' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%2364748b'%3EFoto%3C/text%3E%3C/svg%3E";
 
@@ -211,14 +263,24 @@
     if (typeof firebase !== "undefined" && !firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     var db = firebase.firestore();
 
+    // Fungsi format tanggal (2026-07-13 menjadi 13 Jul 2026)
+    function formatTgl(dateStr) {
+        if (!dateStr || dateStr === "-") return "-";
+        var bulan = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+        var parts = dateStr.split("-");
+        if (parts.length === 3) {
+            return parseInt(parts[2]) + " " + bulan[parseInt(parts[1]) - 1] + " " + parts[0];
+        }
+        return dateStr;
+    }
+
     // ==========================================
-    // 1. LISTEN SETTINGS & PROFIL
+    // 1. LISTEN SETTINGS & PROFIL (DITAMBAH SEKRETARIAT)
     // ==========================================
     db.collection("settings").doc("profil_informasi").onSnapshot(function(doc) {
         if (!doc.exists) return;
         var d = doc.data();
         
-        // Set Edisi Mading
         var elEdisi = document.getElementById("view-edisi-mading");
         if (elEdisi) elEdisi.innerText = d.edisi_mading || "Edisi Mading RW Mekarindah";
         
@@ -232,6 +294,11 @@
         el = document.getElementById("view-ketua-rw"); if (el) el.innerText = d.ketua || "-";
         el = document.getElementById("view-sekretaris"); if (el) el.innerText = d.sekretaris || "-";
         el = document.getElementById("view-foto-sekretaris"); if (el) { el.src = d.foto_sekretaris || PH_FOTO; el.onerror = function(){this.src=PH_FOTO;this.onerror=null;}; }
+        
+        // SEKRETARIAT BARU
+        el = document.getElementById("view-sekretariat"); if (el) el.innerText = d.sekretariat || "-";
+        el = document.getElementById("view-foto-sekretariat"); if (el) { el.src = d.foto_sekretariat || PH_FOTO; el.onerror = function(){this.src=PH_FOTO;this.onerror=null;}; }
+
         el = document.getElementById("view-bendahara"); if (el) el.innerText = d.bendahara || "-";
         el = document.getElementById("view-foto-bendahara"); if (el) { el.src = d.foto_bendahara || PH_FOTO; el.onerror = function(){this.src=PH_FOTO;this.onerror=null;}; }
 
@@ -290,7 +357,7 @@
     }, function(err) { console.error("Error Kas:", err); });
 
     // ==========================================
-    // 3. LISTEN KEGIATAN
+    // 3. LISTEN KEGIATAN (JUDUL BESAR, TANGGAL FORMAT BARU)
     // ==========================================
     db.collection("kegiatan").orderBy("tanggal", "desc").onSnapshot(function(snapshot) {
         var container = document.getElementById("view-container-kegiatan");
@@ -298,8 +365,16 @@
         var docs = []; snapshot.forEach(function(doc) { docs.push({id: doc.id, data: doc.data()}); });
         if (docs.length === 0) { container.innerHTML = '<div class="col-span-full text-center py-16 text-slate-400"><p class="text-sm font-medium">Belum ada laporan kegiatan</p></div>'; return; }
         docs.forEach(function(item) {
-            var data = item.data; var judul = data.judul || data.title || "Kegiatan"; var deskripsi = data.deskripsi || data.isi || data.keterangan || ""; var tanggal = data.tanggal || "-"; var koor = data.koordinator || data.pelaksana || data.seksi || "-"; var gambar = data.gambar || data.foto || data.image || ""; var shortD = deskripsi.length > 120 ? deskripsi.substring(0, 120) + "..." : deskripsi; var imgH = ""; if (gambar) imgH = '<div class="w-full h-44 overflow-hidden rounded-t-2xl bg-slate-100"><img src="' + gambar + '" alt="' + judul + '" class="w-full h-full object-cover" onerror="this.parentElement.style.display=\'none\'"></div>';
-            container.innerHTML += '<article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">' + imgH + '<div class="p-5 space-y-2"><div class="flex items-center justify-between text-xs text-slate-400"><span class="bg-green-50 text-green-700 font-semibold px-2.5 py-1 rounded-full">' + tanggal + '</span><span class="text-blue-600 font-medium">' + koor + '</span></div><h3 class="font-bold text-slate-800 text-base leading-snug">' + judul + '</h3><p class="text-slate-500 text-sm leading-relaxed">' + shortD + '</p></div></article>';
+            var data = item.data; 
+            var judul = data.judul || data.title || "Kegiatan"; 
+            var deskripsi = data.deskripsi || data.isi || data.keterangan || ""; 
+            var tanggal = formatTgl(data.tanggal); 
+            var koor = data.koordinator || data.pelaksana || data.seksi || "-"; 
+            var gambar = data.gambar || data.foto || data.image || ""; 
+            var imgH = ""; 
+            if (gambar) imgH = '<div class="w-full h-44 overflow-hidden rounded-t-2xl bg-slate-100"><img src="' + gambar + '" alt="' + judul + '" class="w-full h-full object-cover" onerror="this.parentElement.style.display=\'none\'"></div>';
+            
+            container.innerHTML += '<article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">' + imgH + '<div class="p-5 space-y-2"><h3 class="font-extrabold text-slate-800 text-xl leading-tight">' + judul + '</h3><p class="text-sm text-slate-500 font-medium">' + tanggal + '</p><p class="text-slate-600 text-sm leading-relaxed">' + deskripsi + '</p></div></article>';
         });
     }, function(err) { console.error("Error Kegiatan:", err); });
 
@@ -317,7 +392,6 @@
         });
     }, function(err) { console.error("Error Mading:", err); });
 
-    // Toggle Baca Selengkapnya
     window.toggleMading = function(fullId, btn) { var shortId = fullId.replace("mading-full-", "mading-short-"); var elF = document.getElementById(fullId); var elS = document.getElementById(shortId); if (elF && elS) { elF.classList.remove("hidden"); elS.classList.add("hidden"); btn.style.display = "none"; } };
 
     // ==========================================

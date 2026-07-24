@@ -140,9 +140,10 @@
                             </div>
                         </div>
 
+                        <!-- 2. Pengurus Inti (DIUBAH JADI 4 KOLOM + DITAMBAH SEKRETARIAT) -->
                         <div class="space-y-4">
                             <h3 class="font-bold text-blue-600 border-b pb-2">2. Pengurus Inti (Nama & Foto)</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
                                     <p class="font-semibold text-sm text-slate-700">Ketua RW</p>
                                     <div>
@@ -159,6 +160,18 @@
                                     <div>
                                         <label class="block text-xs font-medium mb-1">URL Foto Sekretaris</label>
                                         <input type="text" id="pengurus-foto-sekretaris" placeholder="https://..." class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                                    </div>
+                                </div>
+                                <!-- DITAMBAH: SEKRETARIAT -->
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                                    <p class="font-semibold text-sm text-slate-700">Sekretariat</p>
+                                    <div>
+                                        <label class="block text-xs font-medium mb-1">Nama Sekretariat</label>
+                                        <input type="text" id="pengurus-sekretariat" class="w-full px-3 py-1.5 border rounded-lg text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium mb-1">URL Foto Sekretariat</label>
+                                        <input type="text" id="pengurus-foto-sekretariat" placeholder="https://..." class="w-full px-3 py-1.5 border rounded-lg text-sm">
                                     </div>
                                 </div>
                                 <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
@@ -394,9 +407,7 @@
 
         function initDataListeners() {
 
-            // ============================================
-            // ✅ FIX 1: LOAD EDISI DARI DOKUMEN YANG BENAR
-            // ============================================
+            // Load Profil, RT, Seksi & Sekretariat
             db.collection("settings").doc("profil_informasi").get().then(function(doc) {
                 if (doc.exists) {
                     var d = doc.data();
@@ -411,14 +422,19 @@
                     document.getElementById("pengurus-ketua").value = d.ketua || "";
                     document.getElementById("pengurus-sekretaris").value = d.sekretaris || "";
                     document.getElementById("pengurus-foto-sekretaris").value = d.foto_sekretaris || "";
+                    
+                    // LOAD SEKRETARIAT BARU
+                    document.getElementById("pengurus-sekretariat").value = d.sekretariat || "";
+                    document.getElementById("pengurus-foto-sekretariat").value = d.foto_sekretariat || "";
+
                     document.getElementById("pengurus-bendahara").value = d.bendahara || "";
                     document.getElementById("pengurus-foto-bendahara").value = d.foto_bendahara || "";
 
                     // Load RT 01-06
                     if (d.data_rt) {
-                        for (var i = 1; i <= 6; i++) {
-                            var rtNum = String(i).padStart(2, '0');
-                            var rtInfo = d.data_rt["rt_" + rtNum] || {};
+                        for (let i = 1; i <= 6; i++) {
+                            const rtNum = String(i).padStart(2, '0');
+                            const rtInfo = d.data_rt["rt_" + rtNum] || {};
                             document.getElementById("rt-" + rtNum + "-nama").value = rtInfo.nama || "";
                             document.getElementById("rt-" + rtNum + "-foto").value = rtInfo.foto || "";
                             document.getElementById("rt-" + rtNum + "-kk").value = rtInfo.kk || 0;
@@ -502,6 +518,8 @@
                 ketua: document.getElementById("pengurus-ketua").value,
                 sekretaris: document.getElementById("pengurus-sekretaris").value,
                 foto_sekretaris: document.getElementById("pengurus-foto-sekretaris").value,
+                sekretariat: document.getElementById("pengurus-sekretariat").value,           // DITAMBAH
+                foto_sekretariat: document.getElementById("pengurus-foto-sekretariat").value, // DITAMBAH
                 bendahara: document.getElementById("pengurus-bendahara").value,
                 foto_bendahara: document.getElementById("pengurus-foto-bendahara").value,
                 data_rt: dataRtObj,
@@ -511,9 +529,6 @@
             .catch(function(err) { alert("Gagal: " + err.message); });
         }
 
-        // ============================================
-        // ✅ FIX 2: SIMPAN EDISI KE DOKUMEN YANG BENAR
-        // ============================================
         function simpanEdisiMading(e) {
             e.preventDefault();
             var nilaiEdisi = document.getElementById("mading-edisi").value.trim();
@@ -526,9 +541,6 @@
             .catch(function(err) { alert("Gagal menyimpan: " + err.message); });
         }
 
-        // ============================================
-        // ✅ FIX 3: MADING TAMBAH FIELD tanggal, gambar, penulis
-        // ============================================
         function tambahMading(e) {
             e.preventDefault();
             db.collection("mading").add({
@@ -547,9 +559,6 @@
 
         function hapusMading(id) { if (confirm("Hapus mading ini?")) db.collection("mading").doc(id).delete(); }
 
-        // ============================================
-        // ✅ FIX 4: KEGIATAN - FIELD NAME COCOK DENGAN FRONTEND
-        // ============================================
         function tambahKegiatan(e) {
             e.preventDefault();
             db.collection("kegiatan").add({

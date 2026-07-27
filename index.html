@@ -395,7 +395,7 @@
         return ""; // Bukan video, kembalikan kosong (akan jadi gambar)
     }
 
-    db.collection("kegiatan").orderBy("tanggal", "desc").onSnapshot(function(snapshot) {
+        db.collection("kegiatan").orderBy("created_at", "desc").onSnapshot(function(snapshot) {
         var container = document.getElementById("view-container-kegiatan");
         if (!container) return; container.innerHTML = "";
         var docs = []; snapshot.forEach(function(doc) { docs.push({id: doc.id, data: doc.data()}); });

@@ -415,8 +415,8 @@
                     // Jika Video (YouTube/IG/TikTok)
                     mediaHtml = '<div class="w-full overflow-hidden rounded-t-2xl bg-black aspect-video"><iframe src="' + embedUrl + '" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
                 } else {
-                    // Jika Gambar
-                    mediaHtml = '<div class="w-full h-44 overflow-hidden rounded-t-2xl bg-slate-100"><img src="' + mediaUrl + '" alt="' + judul + '" class="w-full h-full object-cover" onerror="this.parentElement.style.display=\'none\'"></div>';
+                                        // Jika Gambar (Tinggi disamakan dengan YouTube 16:9)
+                    mediaHtml = '<div class="w-full aspect-video overflow-hidden rounded-t-2xl bg-slate-100"><img src="' + mediaUrl + '" alt="' + judul + '" class="w-full h-full object-cover" onerror="this.parentElement.style.display=\'none\'"></div>';
                 }
             }
             

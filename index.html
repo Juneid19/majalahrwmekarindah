@@ -356,18 +356,24 @@
         el = document.getElementById("view-saldo-kas"); if (el) el.innerText = "Rp " + saldo.toLocaleString("id-ID");
     }, function(err) { console.error("Error Kas:", err); });
 
-            // ==========================================
-    // 3. LISTEN KEGIATAN (ANTIBATAS, URUTAN DI JS)
+              // ==========================================
+    // 3. LISTEN KEGIATAN (SUPER AMAN, ANTI ERROR)
     // ==========================================
     function convertToEmbed(url) {
-        if (!url) return "";
+        if (!url || typeof url !== "string") return "";
         var lowerUrl = url.toLowerCase();
         var ytId = "";
+        
         if (lowerUrl.indexOf("youtu.be/") !== -1) {
             ytId = url.split("youtu.be/")[1].split("?")[0];
         } else if (lowerUrl.indexOf("youtube.com/watch") !== -1) {
-            var params = new URL(url);
-            ytId = params.searchParams.get("v");
+            try {
+                var params = new URL(url);
+                ytId = params.searchParams.get("v");
+            } catch(e) {
+                var match = url.match(/[?&]v=([^&#]*)/);
+                if (match) ytId = match[1];
+            }
         } else if (lowerUrl.indexOf("youtube.com/embed") !== -1) {
             return url;
         }
@@ -399,10 +405,10 @@
         var docs = []; 
         snapshot.forEach(function(doc) { docs.push({id: doc.id, data: doc.data()}); });
         
-        // Urutkan di Javascript berdasarkan tanggal, kalau kosong pakai created_at
+        // Urutkan di Javascript
         docs.sort(function(a, b) {
-            var tglA = a.data.tanggal || (a.data.created_at ? new Date(a.data.created_at.seconds * 1000).toISOString().slice(0,10) : "");
-            var tglB = b.data.tanggal || (b.data.created_at ? new Date(b.data.created_at.seconds * 1000).toISOString().slice(0,10) : "");
+            var tglA = a.data.tanggal || (a.data.created_at && a.data.created_at.seconds ? new Date(a.data.created_at.seconds * 1000).toISOString().slice(0,10) : "");
+            var tglB = b.data.tanggal || (b.data.created_at && b.data.created_at.seconds ? new Date(b.data.created_at.seconds * 1000).toISOString().slice(0,10) : "");
             return String(tglB).localeCompare(String(tglA));
         });
 
@@ -411,27 +417,33 @@
             return; 
         }
         
+        // TAMBAHAN TRY-CATCH DI SINI SUPAYA 1 ERROR TIDAK MENGHENTIKAN YANG LAIN
         docs.forEach(function(item) {
-            var data = item.data; 
-            var judul = data.judul || data.title || "Kegiatan"; 
-            var deskripsi = data.deskripsi || data.isi || data.keterangan || ""; 
-            var tanggal = formatTgl(data.tanggal); 
-            var koor = data.koordinator || data.pelaksana || data.seksi || "-"; 
-            var mediaUrl = data.gambar || data.foto || data.image || data.video || ""; 
-            
-            var mediaHtml = "";
-            if (mediaUrl) {
-                var embedUrl = convertToEmbed(mediaUrl);
-                if (embedUrl) {
-                    mediaHtml = '<div class="w-full aspect-video overflow-hidden rounded-t-2xl bg-black"><iframe src="' + embedUrl + '" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
-                } else {
-                    mediaHtml = '<div class="w-full aspect-video overflow-hidden rounded-t-2xl bg-slate-100"><img src="' + mediaUrl + '" alt="' + judul + '" class="w-full h-full object-cover" onerror="this.parentElement.style.display=\'none\'"></div>';
+            try {
+                var data = item.data; 
+                var judul = data.judul || data.title || "Kegiatan"; 
+                var deskripsi = data.deskripsi || data.isi || data.keterangan || ""; 
+                var tanggal = formatTgl(data.tanggal); 
+                var koor = data.koordinator || data.pelaksana || data.seksi || "-"; 
+                var mediaUrl = data.gambar || data.foto || data.image || data.video || ""; 
+                
+                var mediaHtml = "";
+                if (mediaUrl) {
+                    var embedUrl = convertToEmbed(mediaUrl);
+                    if (embedUrl) {
+                        mediaHtml = '<div class="w-full aspect-video overflow-hidden rounded-t-2xl bg-black"><iframe src="' + embedUrl + '" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+                    } else {
+                        mediaHtml = '<div class="w-full aspect-video overflow-hidden rounded-t-2xl bg-slate-100"><img src="' + mediaUrl + '" alt="' + judul + '" class="w-full h-full object-cover" onerror="this.parentElement.style.display=\'none\'"></div>';
+                    }
                 }
+                
+                container.innerHTML += '<article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">' + mediaHtml + '<div class="p-5 space-y-2"><h3 class="font-extrabold text-slate-800 text-xl leading-tight">' + judul + '</h3><p class="text-sm text-slate-500 font-medium">' + tanggal + '</p><p class="text-slate-600 text-sm leading-relaxed">' + deskripsi + '</p></div></article>';
+            } catch(err) {
+                console.error("Error rendering 1 kegiatan, dilewati:", err);
             }
-            
-            container.innerHTML += '<article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">' + mediaHtml + '<div class="p-5 space-y-2"><h3 class="font-extrabold text-slate-800 text-xl leading-tight">' + judul + '</h3><p class="text-sm text-slate-500 font-medium">' + tanggal + '</p><p class="text-slate-600 text-sm leading-relaxed">' + deskripsi + '</p></div></article>';
         });
-    }, function(err) { console.error("Error Kegiatan:", err); });    // ==========================================
+    }, function(err) { console.error("Error Kegiatan:", err); });    
+        // ==========================================
     // 4. LISTEN MADING DIGITAL
     // ==========================================
     db.collection("mading").orderBy("tanggal", "desc").onSnapshot(function(snapshot) {

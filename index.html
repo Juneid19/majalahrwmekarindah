@@ -356,43 +356,65 @@
         el = document.getElementById("view-saldo-kas"); if (el) el.innerText = "Rp " + saldo.toLocaleString("id-ID");
     }, function(err) { console.error("Error Kas:", err); });
 
-              // ==========================================
-    // 3. LISTEN KEGIATAN (SUPER AMAN, ANTI ERROR)
+                 // ==========================================
+    // 3. LISTEN KEGIATAN (SUPER EXTRA AMAN)
     // ==========================================
+    function escapeHtml(text) {
+        if (!text) return "";
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+    }
+
     function convertToEmbed(url) {
         if (!url || typeof url !== "string") return "";
         var lowerUrl = url.toLowerCase();
         var ytId = "";
         
-        if (lowerUrl.indexOf("youtu.be/") !== -1) {
-            ytId = url.split("youtu.be/")[1].split("?")[0];
-        } else if (lowerUrl.indexOf("youtube.com/watch") !== -1) {
-            try {
-                var params = new URL(url);
-                ytId = params.searchParams.get("v");
-            } catch(e) {
-                var match = url.match(/[?&]v=([^&#]*)/);
-                if (match) ytId = match[1];
+        try {
+            if (lowerUrl.indexOf("youtu.be/") !== -1) {
+                var parts = url.split("youtu.be/");
+                if (parts[1]) ytId = parts[1].split("?")[0];
+            } else if (lowerUrl.indexOf("youtube.com/watch") !== -1) {
+                try {
+                    var params = new URL(url);
+                    ytId = params.searchParams.get("v");
+                } catch(e) {
+                    var match = url.match(/[?&]v=([^&#]*)/);
+                    if (match) ytId = match[1];
+                }
+            } else if (lowerUrl.indexOf("youtube.com/embed") !== -1) {
+                return url;
             }
-        } else if (lowerUrl.indexOf("youtube.com/embed") !== -1) {
-            return url;
-        }
+        } catch(e) { return ""; }
+        
         if (ytId) return "https://www.youtube.com/embed/" + ytId;
 
-        if (lowerUrl.indexOf("instagram.com") !== -1) {
-            if (lowerUrl.indexOf("/reel/") !== -1) {
-                var reelCode = url.split("/reel/")[1].split("/")[0].split("?")[0];
-                if (reelCode) return "https://www.instagram.com/reel/" + reelCode + "/embed/";
-            } else if (lowerUrl.indexOf("/p/") !== -1) {
-                var postCode = url.split("/p/")[1].split("/")[0].split("?")[0];
-                if (postCode) return "https://www.instagram.com/p/" + postCode + "/embed/";
+        try {
+            if (lowerUrl.indexOf("instagram.com") !== -1) {
+                if (lowerUrl.indexOf("/reel/") !== -1) {
+                    var reelParts = url.split("/reel/");
+                    if (reelParts[1]) {
+                        var reelCode = reelParts[1].split("/")[0].split("?")[0];
+                        if (reelCode) return "https://www.instagram.com/reel/" + reelCode + "/embed/";
+                    }
+                } else if (lowerUrl.indexOf("/p/") !== -1) {
+                    var pParts = url.split("/p/");
+                    if (pParts[1]) {
+                        var postCode = pParts[1].split("/")[0].split("?")[0];
+                        if (postCode) return "https://www.instagram.com/p/" + postCode + "/embed/";
+                    }
+                }
             }
-        }
 
-        if (lowerUrl.indexOf("tiktok.com") !== -1) {
-            var ttId = url.split("/video/")[1].split("?")[0];
-            if (ttId) return "https://www.tiktok.com/embed/v2/" + ttId;
-        }
+            if (lowerUrl.indexOf("tiktok.com") !== -1) {
+                var ttParts = url.split("/video/");
+                if (ttParts[1]) {
+                    var ttId = ttParts[1].split("?")[0];
+                    if (ttId) return "https://www.tiktok.com/embed/v2/" + ttId;
+                }
+            }
+        } catch(e) { return ""; }
 
         return "";
     }
@@ -400,12 +422,10 @@
     db.collection("kegiatan").onSnapshot(function(snapshot) {
         var container = document.getElementById("view-container-kegiatan");
         if (!container) return; 
-        container.innerHTML = "";
         
         var docs = []; 
         snapshot.forEach(function(doc) { docs.push({id: doc.id, data: doc.data()}); });
         
-        // Urutkan di Javascript
         docs.sort(function(a, b) {
             var tglA = a.data.tanggal || (a.data.created_at && a.data.created_at.seconds ? new Date(a.data.created_at.seconds * 1000).toISOString().slice(0,10) : "");
             var tglB = b.data.tanggal || (b.data.created_at && b.data.created_at.seconds ? new Date(b.data.created_at.seconds * 1000).toISOString().slice(0,10) : "");
@@ -417,14 +437,15 @@
             return; 
         }
         
-        // TAMBAHAN TRY-CATCH DI SINI SUPAYA 1 ERROR TIDAK MENGHENTIKAN YANG LAIN
+        container.innerHTML = ""; 
+        
         docs.forEach(function(item) {
             try {
                 var data = item.data; 
-                var judul = data.judul || data.title || "Kegiatan"; 
-                var deskripsi = data.deskripsi || data.isi || data.keterangan || ""; 
+                var judul = escapeHtml(data.judul || data.title || "Kegiatan"); 
+                var deskripsi = escapeHtml(data.deskripsi || data.isi || data.keterangan || ""); 
                 var tanggal = formatTgl(data.tanggal); 
-                var koor = data.koordinator || data.pelaksana || data.seksi || "-"; 
+                var koor = escapeHtml(data.koordinator || data.pelaksana || data.seksi || "-"); 
                 var mediaUrl = data.gambar || data.foto || data.image || data.video || ""; 
                 
                 var mediaHtml = "";
@@ -439,10 +460,10 @@
                 
                 container.innerHTML += '<article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">' + mediaHtml + '<div class="p-5 space-y-2"><h3 class="font-extrabold text-slate-800 text-xl leading-tight">' + judul + '</h3><p class="text-sm text-slate-500 font-medium">' + tanggal + '</p><p class="text-slate-600 text-sm leading-relaxed">' + deskripsi + '</p></div></article>';
             } catch(err) {
-                console.error("Error rendering 1 kegiatan, dilewati:", err);
+                console.error("Error 1 kegiatan dilewati:", err);
             }
         });
-    }, function(err) { console.error("Error Kegiatan:", err); });    
+    }, function(err) { console.error("Error Kegiatan:", err); });
         // ==========================================
     // 4. LISTEN MADING DIGITAL
     // ==========================================

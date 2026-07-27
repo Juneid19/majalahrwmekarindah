@@ -356,9 +356,45 @@
         el = document.getElementById("view-saldo-kas"); if (el) el.innerText = "Rp " + saldo.toLocaleString("id-ID");
     }, function(err) { console.error("Error Kas:", err); });
 
+        // ==========================================
+    // 3. LISTEN KEGIATAN (SUPPORT GAMBAR & VIDEO YOUTUBE/IG/TT)
     // ==========================================
-    // 3. LISTEN KEGIATAN (JUDUL BESAR, TANGGAL FORMAT BARU)
-    // ==========================================
+    function convertToEmbed(url) {
+        if (!url) return "";
+        var lowerUrl = url.toLowerCase();
+        
+        // YouTube (youtu.be & youtube.com/watch)
+        var ytId = "";
+        if (lowerUrl.indexOf("youtu.be/") !== -1) {
+            ytId = url.split("youtu.be/")[1].split("?")[0];
+        } else if (lowerUrl.indexOf("youtube.com/watch") !== -1) {
+            var params = new URL(url).searchParams;
+            ytId = params.get("v");
+        } else if (lowerUrl.indexOf("youtube.com/embed") !== -1) {
+            return url; // Sudah embed
+        }
+        if (ytId) return "https://www.youtube.com/embed/" + ytId;
+
+        // Instagram Reels / Post
+        if (lowerUrl.indexOf("instagram.com") !== -1) {
+            if (lowerUrl.indexOf("/reel/") !== -1) {
+                var reelCode = url.split("/reel/")[1].split("/")[0].split("?")[0];
+                if (reelCode) return "https://www.instagram.com/reel/" + reelCode + "/embed/";
+            } else if (lowerUrl.indexOf("/p/") !== -1) {
+                var postCode = url.split("/p/")[1].split("/")[0].split("?")[0];
+                if (postCode) return "https://www.instagram.com/p/" + postCode + "/embed/";
+            }
+        }
+
+        // TikTok
+        if (lowerUrl.indexOf("tiktok.com") !== -1) {
+            var ttId = url.split("/video/")[1].split("?")[0];
+            if (ttId) return "https://www.tiktok.com/embed/v2/" + ttId;
+        }
+
+        return ""; // Bukan video, kembalikan kosong (akan jadi gambar)
+    }
+
     db.collection("kegiatan").orderBy("tanggal", "desc").onSnapshot(function(snapshot) {
         var container = document.getElementById("view-container-kegiatan");
         if (!container) return; container.innerHTML = "";
@@ -370,14 +406,23 @@
             var deskripsi = data.deskripsi || data.isi || data.keterangan || ""; 
             var tanggal = formatTgl(data.tanggal); 
             var koor = data.koordinator || data.pelaksana || data.seksi || "-"; 
-            var gambar = data.gambar || data.foto || data.image || ""; 
-            var imgH = ""; 
-            if (gambar) imgH = '<div class="w-full h-44 overflow-hidden rounded-t-2xl bg-slate-100"><img src="' + gambar + '" alt="' + judul + '" class="w-full h-full object-cover" onerror="this.parentElement.style.display=\'none\'"></div>';
+            var mediaUrl = data.gambar || data.foto || data.image || data.video || ""; 
             
-            container.innerHTML += '<article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">' + imgH + '<div class="p-5 space-y-2"><h3 class="font-extrabold text-slate-800 text-xl leading-tight">' + judul + '</h3><p class="text-sm text-slate-500 font-medium">' + tanggal + '</p><p class="text-slate-600 text-sm leading-relaxed">' + deskripsi + '</p></div></article>';
+            var mediaHtml = "";
+            if (mediaUrl) {
+                var embedUrl = convertToEmbed(mediaUrl);
+                if (embedUrl) {
+                    // Jika Video (YouTube/IG/TikTok)
+                    mediaHtml = '<div class="w-full overflow-hidden rounded-t-2xl bg-black aspect-video"><iframe src="' + embedUrl + '" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+                } else {
+                    // Jika Gambar
+                    mediaHtml = '<div class="w-full h-44 overflow-hidden rounded-t-2xl bg-slate-100"><img src="' + mediaUrl + '" alt="' + judul + '" class="w-full h-full object-cover" onerror="this.parentElement.style.display=\'none\'"></div>';
+                }
+            }
+            
+            container.innerHTML += '<article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">' + mediaHtml + '<div class="p-5 space-y-2"><h3 class="font-extrabold text-slate-800 text-xl leading-tight">' + judul + '</h3><p class="text-sm text-slate-500 font-medium">' + tanggal + '</p><p class="text-slate-600 text-sm leading-relaxed">' + deskripsi + '</p></div></article>';
         });
     }, function(err) { console.error("Error Kegiatan:", err); });
-
     // ==========================================
     // 4. LISTEN MADING DIGITAL
     // ==========================================
